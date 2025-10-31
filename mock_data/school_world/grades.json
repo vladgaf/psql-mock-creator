@@ -1,0 +1,20 @@
+[
+    {
+        "student_id": 1,
+        "subject_id": 1,
+        "grade": 5,
+        "date": "2024-01-15"
+    },
+    {
+        "student_id": 1,
+        "subject_id": 2,
+        "grade": 4,
+        "date": "2024-01-16"
+    },
+    {
+        "student_id": 2,
+        "subject_id": 1,
+        "grade": 5,
+        "date": "2024-01-15"
+    }
+]

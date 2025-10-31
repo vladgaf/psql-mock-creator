@@ -1,0 +1,17 @@
+[
+    {
+        "first_name": "Елена",
+        "last_name": "Васильева",
+        "subject": "Математика"
+    },
+    {
+        "first_name": "Сергей",
+        "last_name": "Козлов",
+        "subject": "Русский язык"
+    },
+    {
+        "first_name": "Ольга",
+        "last_name": "Николаева",
+        "subject": "История"
+    }
+]
