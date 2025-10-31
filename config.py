@@ -52,8 +52,8 @@ POSTGRES_CONFIG = load_postgres_config()
 # Список баз данных для создания
 DATABASES_CONFIG = {
     'video_games': {
-        'db_name': 'games_easy',  # Изменено на games_easy (без дефиса)
-        'description': 'База данных видеоигр',
+        'db_name': 'games_easy',
+        'description': 'База данных видеоигр (простая)',
         'models_module': 'models.video_games',
         'mock_data_folder': 'video_games'
     },
@@ -62,6 +62,12 @@ DATABASES_CONFIG = {
         'description': 'Школьная база данных',
         'models_module': 'models.school_world',
         'mock_data_folder': 'school_world'
+    },
+    'games_shop': {
+        'db_name': 'games_shop',
+        'description': 'Магазин видеоигр с заказами',
+        'models_module': 'models.games_shop',
+        'mock_data_folder': 'games_shop'
     }
 }
 

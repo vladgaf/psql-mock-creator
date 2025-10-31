@@ -1,0 +1,44 @@
+[
+  {
+    "order_id": 1,
+    "game_id": 2,
+    "quantity": 1,
+    "unit_price": 2999.99
+  },
+  {
+    "order_id": 1,
+    "game_id": 4,
+    "quantity": 2,
+    "unit_price": 1299.99
+  },
+  {
+    "order_id": 2,
+    "game_id": 2,
+    "quantity": 1,
+    "unit_price": 2999.99
+  },
+  {
+    "order_id": 3,
+    "game_id": 4,
+    "quantity": 1,
+    "unit_price": 1299.99
+  },
+  {
+    "order_id": 4,
+    "game_id": 5,
+    "quantity": 1,
+    "unit_price": 3999.99
+  },
+  {
+    "order_id": 5,
+    "game_id": 3,
+    "quantity": 1,
+    "unit_price": 4999.99
+  },
+  {
+    "order_id": 5,
+    "game_id": 1,
+    "quantity": 2,
+    "unit_price": 1999.99
+  }
+]

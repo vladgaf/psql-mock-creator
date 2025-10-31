@@ -1,0 +1,42 @@
+[
+  {
+    "first_name": "Иван",
+    "last_name": "Петров",
+    "email": "ivan.petrov@mail.ru",
+    "phone": "+7-912-345-67-89",
+    "registration_date": "2024-01-15",
+    "city": "Москва"
+  },
+  {
+    "first_name": "Мария",
+    "last_name": "Сидорова",
+    "email": "maria.sidorova@gmail.com",
+    "phone": "+7-923-456-78-90",
+    "registration_date": "2024-02-01",
+    "city": "Санкт-Петербург"
+  },
+  {
+    "first_name": "Алексей",
+    "last_name": "Козлов",
+    "email": "alex.kozlov@yandex.ru",
+    "phone": "+7-934-567-89-01",
+    "registration_date": "2024-01-28",
+    "city": "Екатеринбург"
+  },
+  {
+    "first_name": "Елена",
+    "last_name": "Васильева",
+    "email": "elena.vasileva@mail.ru",
+    "phone": "+7-945-678-90-12",
+    "registration_date": "2024-02-10",
+    "city": "Новосибирск"
+  },
+  {
+    "first_name": "Дмитрий",
+    "last_name": "Николаев",
+    "email": "dmitry.nikolaev@gmail.com",
+    "phone": "+7-956-789-01-23",
+    "registration_date": "2024-02-05",
+    "city": "Казань"
+  }
+]

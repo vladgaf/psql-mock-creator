@@ -1,0 +1,57 @@
+[
+  {
+    "title": "The Witcher 3: Wild Hunt",
+    "genre": "RPG",
+    "platform": "PC",
+    "release_year": 2015,
+    "price": 1999.99,
+    "developer": "CD Projekt Red",
+    "publisher": "CD Projekt",
+    "in_stock": 15,
+    "description": "Эпическая ролевая игра в фэнтезийном мире"
+  },
+  {
+    "title": "Cyberpunk 2077",
+    "genre": "RPG",
+    "platform": "PC",
+    "release_year": 2020,
+    "price": 2999.99,
+    "developer": "CD Projekt Red",
+    "publisher": "CD Projekt",
+    "in_stock": 8,
+    "description": "Приключение в открытом мире будущего"
+  },
+  {
+    "title": "FIFA 24",
+    "genre": "Спорт",
+    "platform": "PlayStation 5",
+    "release_year": 2023,
+    "price": 4999.99,
+    "developer": "EA Sports",
+    "publisher": "Electronic Arts",
+    "in_stock": 20,
+    "description": "Футбольный симулятор с официальными лицензиями"
+  },
+  {
+    "title": "Minecraft",
+    "genre": "Песочница",
+    "platform": "PC",
+    "release_year": 2011,
+    "price": 1299.99,
+    "developer": "Mojang",
+    "publisher": "Mojang",
+    "in_stock": 50,
+    "description": "Строительная игра в мире кубов"
+  },
+  {
+    "title": "Call of Duty: Modern Warfare",
+    "genre": "Шутер",
+    "platform": "Xbox Series X",
+    "release_year": 2022,
+    "price": 3999.99,
+    "developer": "Infinity Ward",
+    "publisher": "Activision",
+    "in_stock": 12,
+    "description": "Тактический шутер от первого лица"
+  }
+]

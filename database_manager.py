@@ -97,6 +97,8 @@ class DatabaseManager:
             return ['teachers', 'classes', 'students', 'subjects', 'grades']
         elif db_name == 'games_easy':
             return ['games']
+        elif db_name == 'games_shop':
+            return ['games', 'customers', 'orders', 'order_items']
         else:
             # Автоматическое определение для других баз
             models = models_module.get_models()
