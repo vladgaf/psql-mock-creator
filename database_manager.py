@@ -43,6 +43,28 @@ class DatabaseManager:
             print(f"❌ Ошибка при создании базы данных '{db_name}': {e}")
             return False
 
+    def drop_database_tables(self, database, models):
+        """Безопасно удаляет таблицы базы данных"""
+        try:
+            print("🧹 Очистка существующих таблиц...")
+            database.drop_tables(models, safe=True)
+            print("✅ Таблицы очищены")
+            return True
+        except Exception as e:
+            print(f"⚠️ Не удалось очистить таблицы: {e}")
+            return False
+
+    def create_database_tables(self, database, models):
+        """Безопасно создает таблицы базы данных"""
+        try:
+            print("📋 Создание таблиц...")
+            database.create_tables(models)
+            print("✅ Таблицы созданы успешно!")
+            return True
+        except Exception as e:
+            print(f"❌ Ошибка при создании таблиц: {e}")
+            return False
+
     def create_database(self, db_name, db_config):
         """Создает одну базу данных с таблицами и данными"""
         print(f"\n{'=' * 50}")
@@ -61,15 +83,18 @@ class DatabaseManager:
             models = models_module.get_models()
 
             # Подключаемся к базе данных
+            print("🔗 Подключение к базе данных...")
             database.connect()
             print("✅ Подключение к базе данных установлено")
 
-            # Очищаем таблицы перед созданием (если они уже существуют)
-            database.drop_tables(models, safe=True)
+            # Очищаем и создаем таблицы
+            if not self.drop_database_tables(database, models):
+                print("⚠️ Продолжаем без очистки таблиц")
 
-            # Создаем таблицы
-            database.create_tables(models)
-            print(f"✅ Таблицы созданы успешно!")
+            if not self.create_database_tables(database, models):
+                print("❌ Не удалось создать таблицы, пропускаем базу")
+                database.close()
+                return False
 
             # Загружаем моковые данные
             self._load_mock_data_smart(db_config, models_module, database)
@@ -88,45 +113,24 @@ class DatabaseManager:
             print(f"❌ Ошибка при создании базы {db_name}: {e}")
             import traceback
             traceback.print_exc()
+
+            # Пытаемся закрыть соединение в случае ошибки
+            try:
+                if 'database' in locals() and not database.is_closed():
+                    database.close()
+            except:
+                pass
             return False
 
     def _get_loading_order(self, db_name, models_module):
         """Определяет порядок загрузки данных"""
-        # Для school_world используем фиксированный порядок
-        if db_name == 'school_world':
-            return ['teachers', 'classes', 'students', 'subjects', 'grades']
-        elif db_name == 'games_easy':
-            return ['games']
-        elif db_name == 'games_shop':
-            return ['games', 'customers', 'orders', 'order_items']
-        else:
-            # Автоматическое определение для других баз
-            models = models_module.get_models()
-            model_dependencies = {}
+        loading_orders = {
+            'school_world': ['teachers', 'classes', 'students', 'subjects', 'grades'],
+            'games_easy': ['games'],
+            'games_shop': ['games', 'customers', 'orders', 'order_items']
+        }
 
-            for model in models:
-                dependencies = []
-                for field_name, field in model._meta.fields.items():
-                    if hasattr(field, 'rel_model') and field.rel_model:
-                        dependencies.append(field.rel_model.__name__.lower())
-                model_dependencies[model.__name__.lower()] = dependencies
-
-            # Топологическая сортировка
-            loading_order = []
-            visited = set()
-
-            def visit(model_name):
-                if model_name in visited:
-                    return
-                visited.add(model_name)
-                for dependency in model_dependencies.get(model_name, []):
-                    visit(dependency)
-                loading_order.append(model_name)
-
-            for model_name in model_dependencies.keys():
-                visit(model_name)
-
-            return loading_order
+        return loading_orders.get(db_name, [])
 
     def _load_mock_data_smart(self, db_config, models_module, database):
         """Умная загрузка данных с обработкой ошибок для каждой записи"""

@@ -2,7 +2,7 @@ from peewee import *
 from config import create_database_connection
 
 # Создаем подключение к базе данных
-database = create_database_connection('school-world')
+database = create_database_connection('school_world')
 
 class BaseModel(Model):
     class Meta:

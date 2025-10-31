@@ -4,7 +4,7 @@
 """
 
 from database_manager import DatabaseManager
-from config import test_connection
+from config import test_connection, show_postgres_config
 
 
 def main():
@@ -12,12 +12,17 @@ def main():
     print("🚀 СИСТЕМА СОЗДАНИЯ УЧЕБНЫХ БАЗ ДАННЫХ PostgreSQL")
     print("=" * 50)
 
+    # Показываем текущую конфигурацию
+    show_postgres_config()
+    print("=" * 50)
+
     # Проверяем подключение к PostgreSQL
     if not test_connection():
         print("❌ Не удалось подключиться к PostgreSQL")
         print("🔧 Проверьте:")
         print("   - Запущен ли PostgreSQL сервер")
-        print("   - Правильность настроек в config.py")
+        print("   - Правильность настроек в config/postgres.json")
+        print("   - Наличие прав у пользователя postgres")
         return
 
     try:
@@ -30,6 +35,7 @@ def main():
 
     except Exception as e:
         print(f"❌ Критическая ошибка: {e}")
+        print("💡 Совет: Попробуйте удалить существующие базы данных и запустить скрипт заново")
 
 
 if __name__ == "__main__":
