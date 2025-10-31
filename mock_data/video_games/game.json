@@ -1,0 +1,74 @@
+[
+    {
+        "title": "Minecraft",
+        "genre": "Песочница",
+        "platform": "PC",
+        "release_year": 2011,
+        "rating": 9.0,
+        "developer": "Mojang",
+        "price": 1299
+    },
+    {
+        "title": "Roblox",
+        "genre": "Песочница",
+        "platform": "PC",
+        "release_year": 2006,
+        "rating": 8.5,
+        "developer": "Roblox Corporation",
+        "price": 0
+    },
+    {
+        "title": "Fortnite",
+        "genre": "Шутер",
+        "platform": "PC",
+        "release_year": 2017,
+        "rating": 8.8,
+        "developer": "Epic Games",
+        "price": 0
+    },
+    {
+        "title": "The Legend of Zelda: Breath of the Wild",
+        "genre": "Приключение",
+        "platform": "Nintendo Switch",
+        "release_year": 2017,
+        "rating": 9.7,
+        "developer": "Nintendo",
+        "price": 3999
+    },
+    {
+        "title": "Mario Kart 8 Deluxe",
+        "genre": "Гонки",
+        "platform": "Nintendo Switch",
+        "release_year": 2017,
+        "rating": 9.2,
+        "developer": "Nintendo",
+        "price": 3599
+    },
+    {
+        "title": "Among Us",
+        "genre": "Социальная",
+        "platform": "Mobile",
+        "release_year": 2018,
+        "rating": 8.2,
+        "developer": "InnerSloth",
+        "price": 0
+    },
+    {
+        "title": "FIFA 24",
+        "genre": "Спорт",
+        "platform": "PlayStation",
+        "release_year": 2023,
+        "rating": 7.8,
+        "developer": "EA Sports",
+        "price": 4999
+    },
+    {
+        "title": "Cyberpunk 2077",
+        "genre": "RPG",
+        "platform": "PC",
+        "release_year": 2020,
+        "rating": 8.9,
+        "developer": "CD Projekt Red",
+        "price": 2999
+    }
+]
