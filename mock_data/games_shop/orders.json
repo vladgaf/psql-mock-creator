@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "customer_id": 1,
     "order_date": "2024-02-15",
     "total_amount": 6999.97,
@@ -7,31 +8,75 @@
     "shipping_address": "ул. Ленина, д. 15, кв. 23, Москва"
   },
   {
+    "id": 2,
     "customer_id": 2,
-    "order_date": "2024-02-16",
-    "total_amount": 2999.99,
-    "status": "pending",
-    "shipping_address": "пр. Невский, д. 45, Санкт-Петербург"
-  },
-  {
-    "customer_id": 3,
-    "order_date": "2024-02-14",
-    "total_amount": 1299.99,
+    "order_date": "2024-02-18",
+    "total_amount": 3799.99,
     "status": "completed",
-    "shipping_address": "ул. Малышева, д. 78, Екатеринбург"
+    "shipping_address": "пр. Просвещения, д. 42, кв. 7, Санкт-Петербург"
   },
   {
+    "id": 3,
+    "customer_id": 3,
+    "order_date": "2024-02-20",
+    "total_amount": 1499.99,
+    "status": "completed",
+    "shipping_address": "ул. Баумана, д. 8, кв. 12, Казань"
+  },
+  {
+    "id": 4,
     "customer_id": 1,
-    "order_date": "2024-02-17",
-    "total_amount": 3999.99,
-    "status": "pending",
+    "order_date": "2024-03-01",
+    "total_amount": 2899.99,
+    "status": "shipped",
     "shipping_address": "ул. Ленина, д. 15, кв. 23, Москва"
   },
   {
+    "id": 5,
     "customer_id": 4,
-    "order_date": "2024-02-18",
-    "total_amount": 8999.98,
+    "order_date": "2024-03-05",
+    "total_amount": 7999.98,
+    "status": "processing",
+    "shipping_address": "ул. Тверская, д. 25, кв. 34, Москва"
+  },
+  {
+    "id": 6,
+    "customer_id": 5,
+    "order_date": "2024-03-08",
+    "total_amount": 4599.99,
     "status": "completed",
-    "shipping_address": "ул. Кирова, д. 12, Новосибирск"
+    "shipping_address": "ул. Кирова, д. 33, кв. 18, Новосибирск"
+  },
+  {
+    "id": 7,
+    "customer_id": 2,
+    "order_date": "2024-03-10",
+    "total_amount": 3199.99,
+    "status": "completed",
+    "shipping_address": "пр. Просвещения, д. 42, кв. 7, Санкт-Петербург"
+  },
+  {
+    "id": 8,
+    "customer_id": 6,
+    "order_date": "2024-03-12",
+    "total_amount": 499.99,
+    "status": "completed",
+    "shipping_address": "ул. Луначарского, д. 17, кв. 9, Екатеринбург"
+  },
+  {
+    "id": 9,
+    "customer_id": 7,
+    "order_date": "2024-03-14",
+    "total_amount": 3299.99,
+    "status": "shipped",
+    "shipping_address": "ул. Арбат, д. 12, кв. 45, Москва"
+  },
+  {
+    "id": 10,
+    "customer_id": 8,
+    "order_date": "2024-03-15",
+    "total_amount": 1799.99,
+    "status": "processing",
+    "shipping_address": "ул. Невский проспект, д. 56, кв. 21, Санкт-Петербург"
   }
 ]

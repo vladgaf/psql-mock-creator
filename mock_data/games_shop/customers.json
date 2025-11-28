@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "first_name": "Иван",
     "last_name": "Петров",
     "email": "ivan.petrov@mail.ru",
@@ -8,35 +9,84 @@
     "city": "Москва"
   },
   {
+    "id": 2,
     "first_name": "Мария",
     "last_name": "Сидорова",
     "email": "maria.sidorova@gmail.com",
     "phone": "+7-923-456-78-90",
-    "registration_date": "2024-02-01",
+    "registration_date": "2024-02-20",
     "city": "Санкт-Петербург"
   },
   {
+    "id": 3,
     "first_name": "Алексей",
     "last_name": "Козлов",
     "email": "alex.kozlov@yandex.ru",
     "phone": "+7-934-567-89-01",
-    "registration_date": "2024-01-28",
-    "city": "Екатеринбург"
+    "registration_date": "2023-12-10",
+    "city": "Казань"
   },
   {
-    "first_name": "Елена",
-    "last_name": "Васильева",
-    "email": "elena.vasileva@mail.ru",
+    "id": 4,
+    "first_name": "Екатерина",
+    "last_name": "Иванова",
+    "email": "katya.ivanova@mail.ru",
     "phone": "+7-945-678-90-12",
-    "registration_date": "2024-02-10",
+    "registration_date": "2024-03-05",
+    "city": "Москва"
+  },
+  {
+    "id": 5,
+    "first_name": "Дмитрий",
+    "last_name": "Смирнов",
+    "email": "dmitry.smirnov@gmail.com",
+    "phone": "+7-956-789-01-23",
+    "registration_date": "2024-01-28",
     "city": "Новосибирск"
   },
   {
-    "first_name": "Дмитрий",
-    "last_name": "Николаев",
-    "email": "dmitry.nikolaev@gmail.com",
-    "phone": "+7-956-789-01-23",
-    "registration_date": "2024-02-05",
-    "city": "Казань"
+    "id": 6,
+    "first_name": "Анна",
+    "last_name": "Кузнецова",
+    "email": "anna.kuznetsova@yandex.ru",
+    "phone": "+7-967-890-12-34",
+    "registration_date": "2024-02-14",
+    "city": "Екатеринбург"
+  },
+  {
+    "id": 7,
+    "first_name": "Сергей",
+    "last_name": "Попов",
+    "email": "sergey.popov@mail.ru",
+    "phone": "+7-978-901-23-45",
+    "registration_date": "2023-11-30",
+    "city": "Москва"
+  },
+  {
+    "id": 8,
+    "first_name": "Ольга",
+    "last_name": "Лебедева",
+    "email": "olga.lebedeva@gmail.com",
+    "phone": "+7-989-012-34-56",
+    "registration_date": "2024-03-12",
+    "city": "Санкт-Петербург"
+  },
+  {
+    "id": 9,
+    "first_name": "Артем",
+    "last_name": "Новиков",
+    "email": "artem.novikov@yandex.ru",
+    "phone": "+7-990-123-45-67",
+    "registration_date": "2024-02-28",
+    "city": "Краснодар"
+  },
+  {
+    "id": 10,
+    "first_name": "Наталья",
+    "last_name": "Морозова",
+    "email": "natalia.morozova@mail.ru",
+    "phone": "+7-901-234-56-78",
+    "registration_date": "2024-01-10",
+    "city": "Москва"
   }
 ]
