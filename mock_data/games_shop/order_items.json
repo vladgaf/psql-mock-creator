@@ -3,7 +3,7 @@
     "id": 1,
     "order_id": 1,
     "game_id": 2,
-    "quantity": 1,
+    "quantity": 3,
     "unit_price": 2999.99
   },
   {
@@ -73,7 +73,7 @@
     "id": 11,
     "order_id": 9,
     "game_id": 10,
-    "quantity": 1,
+    "quantity": 2,
     "unit_price": 3299.99
   },
   {
@@ -94,7 +94,7 @@
     "id": 14,
     "order_id": 2,
     "game_id": 3,
-    "quantity": 1,
+    "quantity": 2,
     "unit_price": 3499.99
   },
   {
