@@ -68,6 +68,12 @@ DATABASES_CONFIG = {
         'description': 'Магазин видеоигр с заказами',
         'models_module': 'models.games_shop',
         'mock_data_folder': 'games_shop'
+    },
+    'air_travel': {
+        'db_name': 'air_travel',
+        'description': 'База данных авиаперелетов',
+        'models_module': 'models.air_travel',
+        'mock_data_folder': 'air_travel'
     }
 }
 

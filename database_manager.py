@@ -127,7 +127,9 @@ class DatabaseManager:
         loading_orders = {
             'school_world': ['teachers', 'classes', 'students', 'subjects', 'grades'],
             'games_easy': ['games'],
-            'games_shop': ['games', 'customers', 'orders', 'order_items']
+            'games_shop': ['games', 'customers', 'orders', 'order_items'],
+            'air_travel': ['airlines', 'airports', 'aircrafts', 'flights', 'passengers']
+
         }
 
         return loading_orders.get(db_name, [])

@@ -1,0 +1,352 @@
+[
+  {
+    "aircraft_id": 1,
+    "registration_number": "RA-73051",
+    "model": "Boeing 737-800",
+    "manufacturer": "Boeing",
+    "capacity_economy": 150,
+    "capacity_business": 20,
+    "airline_id": 1,
+    "year_of_production": 2015
+  },
+  {
+    "aircraft_id": 2,
+    "registration_number": "RA-73105",
+    "model": "Boeing 737-800",
+    "manufacturer": "Boeing",
+    "capacity_economy": 150,
+    "capacity_business": 20,
+    "airline_id": 1,
+    "year_of_production": 2016
+  },
+  {
+    "aircraft_id": 3,
+    "registration_number": "RA-89098",
+    "model": "Airbus A320-200",
+    "manufacturer": "Airbus",
+    "capacity_economy": 144,
+    "capacity_business": 12,
+    "airline_id": 1,
+    "year_of_production": 2014
+  },
+  {
+    "aircraft_id": 4,
+    "registration_number": "RA-89099",
+    "model": "Airbus A320-200",
+    "manufacturer": "Airbus",
+    "capacity_economy": 144,
+    "capacity_business": 12,
+    "airline_id": 1,
+    "year_of_production": 2015
+  },
+  {
+    "aircraft_id": 5,
+    "registration_number": "RA-73234",
+    "model": "Airbus A350-900",
+    "manufacturer": "Airbus",
+    "capacity_economy": 300,
+    "capacity_business": 36,
+    "airline_id": 1,
+    "year_of_production": 2019
+  },
+  {
+    "aircraft_id": 6,
+    "registration_number": "VP-BWA",
+    "model": "Boeing 737-800",
+    "manufacturer": "Boeing",
+    "capacity_economy": 160,
+    "capacity_business": 8,
+    "airline_id": 2,
+    "year_of_production": 2017
+  },
+  {
+    "aircraft_id": 7,
+    "registration_number": "VP-BWB",
+    "model": "Boeing 737-800",
+    "manufacturer": "Boeing",
+    "capacity_economy": 160,
+    "capacity_business": 8,
+    "airline_id": 2,
+    "year_of_production": 2018
+  },
+  {
+    "aircraft_id": 8,
+    "registration_number": "VP-BWC",
+    "model": "Airbus A320neo",
+    "manufacturer": "Airbus",
+    "capacity_economy": 180,
+    "capacity_business": 0,
+    "airline_id": 2,
+    "year_of_production": 2020
+  },
+  {
+    "aircraft_id": 9,
+    "registration_number": "RA-73041",
+    "model": "Airbus A321-200",
+    "manufacturer": "Airbus",
+    "capacity_economy": 200,
+    "capacity_business": 0,
+    "airline_id": 4,
+    "year_of_production": 2016
+  },
+  {
+    "aircraft_id": 10,
+    "registration_number": "RA-73042",
+    "model": "Airbus A321-200",
+    "manufacturer": "Airbus",
+    "capacity_economy": 200,
+    "capacity_business": 0,
+    "airline_id": 4,
+    "year_of_production": 2017
+  },
+  {
+    "aircraft_id": 11,
+    "registration_number": "TC-JJB",
+    "model": "Boeing 777-300ER",
+    "manufacturer": "Boeing",
+    "capacity_economy": 350,
+    "capacity_business": 49,
+    "airline_id": 6,
+    "year_of_production": 2015
+  },
+  {
+    "aircraft_id": 12,
+    "registration_number": "TC-JJC",
+    "model": "Boeing 777-300ER",
+    "manufacturer": "Boeing",
+    "capacity_economy": 350,
+    "capacity_business": 49,
+    "airline_id": 6,
+    "year_of_production": 2016
+  },
+  {
+    "aircraft_id": 13,
+    "registration_number": "D-AIQA",
+    "model": "Airbus A380-800",
+    "manufacturer": "Airbus",
+    "capacity_economy": 476,
+    "capacity_business": 92,
+    "airline_id": 7,
+    "year_of_production": 2011
+  },
+  {
+    "aircraft_id": 14,
+    "registration_number": "F-HPJE",
+    "model": "Airbus A330-200",
+    "manufacturer": "Airbus",
+    "capacity_economy": 208,
+    "capacity_business": 40,
+    "airline_id": 8,
+    "year_of_production": 2014
+  },
+  {
+    "aircraft_id": 15,
+    "registration_number": "G-EUUA",
+    "model": "Airbus A320-200",
+    "manufacturer": "Airbus",
+    "capacity_economy": 168,
+    "capacity_business": 0,
+    "airline_id": 9,
+    "year_of_production": 2012
+  },
+  {
+    "aircraft_id": 16,
+    "registration_number": "A6-EYE",
+    "model": "Boeing 787-9",
+    "manufacturer": "Boeing",
+    "capacity_economy": 290,
+    "capacity_business": 28,
+    "airline_id": 10,
+    "year_of_production": 2018
+  },
+  {
+    "aircraft_id": 17,
+    "registration_number": "A6-EOB",
+    "model": "Airbus A380-800",
+    "manufacturer": "Airbus",
+    "capacity_economy": 429,
+    "capacity_business": 76,
+    "airline_id": 11,
+    "year_of_production": 2016
+  },
+  {
+    "aircraft_id": 18,
+    "registration_number": "A7-BAC",
+    "model": "Airbus A350-1000",
+    "manufacturer": "Airbus",
+    "capacity_economy": 281,
+    "capacity_business": 46,
+    "airline_id": 12,
+    "year_of_production": 2019
+  },
+  {
+    "aircraft_id": 19,
+    "registration_number": "JA731J",
+    "model": "Boeing 777-300",
+    "manufacturer": "Boeing",
+    "capacity_economy": 364,
+    "capacity_business": 68,
+    "airline_id": 13,
+    "year_of_production": 2011
+  },
+  {
+    "aircraft_id": 20,
+    "registration_number": "N372AN",
+    "model": "Boeing 787-8",
+    "manufacturer": "Boeing",
+    "capacity_economy": 226,
+    "capacity_business": 28,
+    "airline_id": 14,
+    "year_of_production": 2015
+  },
+  {
+    "aircraft_id": 21,
+    "registration_number": "N804NW",
+    "model": "Airbus A330-300",
+    "manufacturer": "Airbus",
+    "capacity_economy": 293,
+    "capacity_business": 34,
+    "airline_id": 15,
+    "year_of_production": 2014
+  },
+  {
+    "aircraft_id": 22,
+    "registration_number": "B-HLU",
+    "model": "Airbus A350-900",
+    "manufacturer": "Airbus",
+    "capacity_economy": 280,
+    "capacity_business": 38,
+    "airline_id": 16,
+    "year_of_production": 2018
+  },
+  {
+    "aircraft_id": 23,
+    "registration_number": "9V-SMJ",
+    "model": "Airbus A380-800",
+    "manufacturer": "Airbus",
+    "capacity_economy": 441,
+    "capacity_business": 86,
+    "airline_id": 17,
+    "year_of_production": 2012
+  },
+  {
+    "aircraft_id": 24,
+    "registration_number": "HL7537",
+    "model": "Boeing 777-300ER",
+    "manufacturer": "Boeing",
+    "capacity_economy": 269,
+    "capacity_business": 42,
+    "airline_id": 18,
+    "year_of_production": 2016
+  },
+  {
+    "aircraft_id": 25,
+    "registration_number": "HS-TUA",
+    "model": "Airbus A350-900",
+    "manufacturer": "Airbus",
+    "capacity_economy": 321,
+    "capacity_business": 32,
+    "airline_id": 19,
+    "year_of_production": 2020
+  },
+  {
+    "aircraft_id": 26,
+    "registration_number": "EI-DTM",
+    "model": "Airbus A320-200",
+    "manufacturer": "Airbus",
+    "capacity_economy": 180,
+    "capacity_business": 0,
+    "airline_id": 20,
+    "year_of_production": 2015
+  },
+  {
+    "aircraft_id": 27,
+    "registration_number": "SP-LRC",
+    "model": "Boeing 787-8",
+    "manufacturer": "Boeing",
+    "capacity_economy": 252,
+    "capacity_business": 18,
+    "airline_id": 21,
+    "year_of_production": 2018
+  },
+  {
+    "aircraft_id": 28,
+    "registration_number": "HB-JHQ",
+    "model": "Airbus A220-300",
+    "manufacturer": "Airbus",
+    "capacity_economy": 145,
+    "capacity_business": 0,
+    "airline_id": 22,
+    "year_of_production": 2021
+  },
+  {
+    "aircraft_id": 29,
+    "registration_number": "OH-LWA",
+    "model": "Airbus A350-900",
+    "manufacturer": "Airbus",
+    "capacity_economy": 297,
+    "capacity_business": 32,
+    "airline_id": 23,
+    "year_of_production": 2019
+  },
+  {
+    "aircraft_id": 30,
+    "registration_number": "PH-BXA",
+    "model": "Boeing 787-9",
+    "manufacturer": "Boeing",
+    "capacity_economy": 294,
+    "capacity_business": 30,
+    "airline_id": 24,
+    "year_of_production": 2016
+  },
+  {
+    "aircraft_id": 31,
+    "registration_number": "EC-MIU",
+    "model": "Airbus A320neo",
+    "manufacturer": "Airbus",
+    "capacity_economy": 180,
+    "capacity_business": 0,
+    "airline_id": 25,
+    "year_of_production": 2020
+  },
+  {
+    "aircraft_id": 32,
+    "registration_number": "RA-89010",
+    "model": "Sukhoi Superjet 100",
+    "manufacturer": "Sukhoi",
+    "capacity_economy": 87,
+    "capacity_business": 0,
+    "airline_id": 3,
+    "year_of_production": 2018
+  },
+  {
+    "aircraft_id": 33,
+    "registration_number": "RA-89011",
+    "model": "Sukhoi Superjet 100",
+    "manufacturer": "Sukhoi",
+    "capacity_economy": 87,
+    "capacity_business": 0,
+    "airline_id": 3,
+    "year_of_production": 2019
+  },
+  {
+    "aircraft_id": 34,
+    "registration_number": "RA-89012",
+    "model": "Airbus A320-200",
+    "manufacturer": "Airbus",
+    "capacity_economy": 180,
+    "capacity_business": 0,
+    "airline_id": 3,
+    "year_of_production": 2014
+  },
+  {
+    "aircraft_id": 35,
+    "registration_number": "RA-89101",
+    "model": "Boeing 737-800",
+    "manufacturer": "Boeing",
+    "capacity_economy": 189,
+    "capacity_business": 0,
+    "airline_id": 3,
+    "year_of_production": 2015
+  }
+]

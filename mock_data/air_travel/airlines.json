@@ -1,0 +1,202 @@
+[
+  {
+    "airline_id": 1,
+    "iata_code": "SU",
+    "icao_code": "AFL",
+    "name": "Аэрофлот",
+    "country": "Россия",
+    "is_active": true
+  },
+  {
+    "airline_id": 2,
+    "iata_code": "S7",
+    "icao_code": "SBI",
+    "name": "S7 Airlines",
+    "country": "Россия",
+    "is_active": true
+  },
+  {
+    "airline_id": 3,
+    "iata_code": "U6",
+    "icao_code": "SVR",
+    "name": "Уральские авиалинии",
+    "country": "Россия",
+    "is_active": true
+  },
+  {
+    "airline_id": 4,
+    "iata_code": "DP",
+    "icao_code": "PBD",
+    "name": "Победа",
+    "country": "Россия",
+    "is_active": true
+  },
+  {
+    "airline_id": 5,
+    "iata_code": "6B",
+    "icao_code": "BLX",
+    "name": "TUIfly Nordic",
+    "country": "Швеция",
+    "is_active": true
+  },
+  {
+    "airline_id": 6,
+    "iata_code": "TK",
+    "icao_code": "THY",
+    "name": "Turkish Airlines",
+    "country": "Турция",
+    "is_active": true
+  },
+  {
+    "airline_id": 7,
+    "iata_code": "LH",
+    "icao_code": "DLH",
+    "name": "Lufthansa",
+    "country": "Германия",
+    "is_active": true
+  },
+  {
+    "airline_id": 8,
+    "iata_code": "AF",
+    "icao_code": "AFR",
+    "name": "Air France",
+    "country": "Франция",
+    "is_active": true
+  },
+  {
+    "airline_id": 9,
+    "iata_code": "BA",
+    "icao_code": "BAW",
+    "name": "British Airways",
+    "country": "Великобритания",
+    "is_active": true
+  },
+  {
+    "airline_id": 10,
+    "iata_code": "EY",
+    "icao_code": "ETD",
+    "name": "Etihad Airways",
+    "country": "ОАЭ",
+    "is_active": true
+  },
+  {
+    "airline_id": 11,
+    "iata_code": "EK",
+    "icao_code": "UAE",
+    "name": "Emirates",
+    "country": "ОАЭ",
+    "is_active": true
+  },
+  {
+    "airline_id": 12,
+    "iata_code": "QR",
+    "icao_code": "QTR",
+    "name": "Qatar Airways",
+    "country": "Катар",
+    "is_active": true
+  },
+  {
+    "airline_id": 13,
+    "iata_code": "JL",
+    "icao_code": "JAL",
+    "name": "Japan Airlines",
+    "country": "Япония",
+    "is_active": true
+  },
+  {
+    "airline_id": 14,
+    "iata_code": "AA",
+    "icao_code": "AAL",
+    "name": "American Airlines",
+    "country": "США",
+    "is_active": true
+  },
+  {
+    "airline_id": 15,
+    "iata_code": "DL",
+    "icao_code": "DAL",
+    "name": "Delta Air Lines",
+    "country": "США",
+    "is_active": true
+  },
+  {
+    "airline_id": 16,
+    "iata_code": "CX",
+    "icao_code": "CPA",
+    "name": "Cathay Pacific",
+    "country": "Гонконг",
+    "is_active": true
+  },
+  {
+    "airline_id": 17,
+    "iata_code": "SQ",
+    "icao_code": "SIA",
+    "name": "Singapore Airlines",
+    "country": "Сингапур",
+    "is_active": true
+  },
+  {
+    "airline_id": 18,
+    "iata_code": "KE",
+    "icao_code": "KAL",
+    "name": "Korean Air",
+    "country": "Южная Корея",
+    "is_active": true
+  },
+  {
+    "airline_id": 19,
+    "iata_code": "TG",
+    "icao_code": "THA",
+    "name": "Thai Airways",
+    "country": "Таиланд",
+    "is_active": true
+  },
+  {
+    "airline_id": 20,
+    "iata_code": "AZ",
+    "icao_code": "ITY",
+    "name": "ITA Airways",
+    "country": "Италия",
+    "is_active": true
+  },
+  {
+    "airline_id": 21,
+    "iata_code": "LO",
+    "icao_code": "LOT",
+    "name": "LOT Polish Airlines",
+    "country": "Польша",
+    "is_active": true
+  },
+  {
+    "airline_id": 22,
+    "iata_code": "LX",
+    "icao_code": "SWR",
+    "name": "Swiss International Air Lines",
+    "country": "Швейцария",
+    "is_active": true
+  },
+  {
+    "airline_id": 23,
+    "iata_code": "AY",
+    "icao_code": "FIN",
+    "name": "Finnair",
+    "country": "Финляндия",
+    "is_active": true
+  },
+  {
+    "airline_id": 24,
+    "iata_code": "KL",
+    "icao_code": "KLM",
+    "name": "KLM Royal Dutch Airlines",
+    "country": "Нидерланды",
+    "is_active": true
+  },
+  {
+    "airline_id": 25,
+    "iata_code": "IB",
+    "icao_code": "IBE",
+    "name": "Iberia",
+    "country": "Испания",
+    "is_active": true
+  }
+]
