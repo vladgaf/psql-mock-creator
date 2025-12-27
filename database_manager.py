@@ -47,12 +47,38 @@ class DatabaseManager:
         """Безопасно удаляет таблицы базы данных"""
         try:
             print("🧹 Очистка существующих таблиц...")
-            database.drop_tables(models, safe=True)
+            self._drop_all_views(database)
+            database.drop_tables(models, safe=False)
             print("✅ Таблицы очищены")
             return True
         except Exception as e:
             print(f"⚠️ Не удалось очистить таблицы: {e}")
             return False
+
+    def _drop_all_views(self, database):
+        """Удаляет все VIEW из базы данных"""
+        try:
+            # Подключаемся к базе данных
+            with database.connection_context():
+                cursor = database.execute_sql("""
+                    SELECT table_name 
+                    FROM information_schema.views 
+                    WHERE table_schema = 'public'
+                """)
+
+                views = cursor.fetchall()
+
+                for view in views:
+                    view_name = view[0]
+                    try:
+                        database.execute_sql(f'DROP VIEW IF EXISTS "{view_name}" CASCADE')
+                        print(f"  🗑️ Удален VIEW: {view_name}")
+                    except Exception as e:
+                        print(f"  ⚠️ Не удалось удалить VIEW {view_name}: {e}")
+
+        except Exception as e:
+            print(f"⚠️ Ошибка при получении списка VIEW: {e}")
+            raise
 
     def create_database_tables(self, database, models):
         """Безопасно создает таблицы базы данных"""
