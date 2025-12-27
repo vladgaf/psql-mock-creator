@@ -50,7 +50,7 @@ pip install peewee psycopg2-binary
 
 ### 3. Запуск создания баз
 ```bash
-python main.py
+python main_console.py
 ```
 
 ## 📁 Структура проекта
