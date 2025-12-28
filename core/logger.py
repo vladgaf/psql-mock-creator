@@ -1,6 +1,7 @@
 import sys
 from io import StringIO
 
+
 class OutputLogger:
     def __init__(self):
         self.original_stdout = sys.stdout

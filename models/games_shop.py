@@ -4,9 +4,11 @@ from core.config_manager import create_database_connection
 # Создаем подключение к базе данных
 database = create_database_connection('games_shop')
 
+
 class BaseModel(Model):
     class Meta:
         database = database
+
 
 class Game(BaseModel):
     title = CharField(max_length=100)
@@ -22,6 +24,7 @@ class Game(BaseModel):
     class Meta:
         table_name = 'games'
 
+
 class Customer(BaseModel):
     first_name = CharField(max_length=50)
     last_name = CharField(max_length=50)
@@ -33,6 +36,7 @@ class Customer(BaseModel):
     class Meta:
         table_name = 'customers'
 
+
 class Order(BaseModel):
     customer = ForeignKeyField(Customer, backref='orders')
     order_date = DateField()
@@ -43,6 +47,7 @@ class Order(BaseModel):
     class Meta:
         table_name = 'orders'
 
+
 class OrderItem(BaseModel):
     order = ForeignKeyField(Order, backref='items')
     game = ForeignKeyField(Game, backref='order_items')
@@ -52,11 +57,14 @@ class OrderItem(BaseModel):
     class Meta:
         table_name = 'order_items'
 
+
 # Список всех моделей для этой БД
 MODELS = [Game, Customer, Order, OrderItem]
 
+
 def get_models():
     return MODELS
+
 
 def get_database():
     return database

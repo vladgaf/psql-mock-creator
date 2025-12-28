@@ -7,10 +7,12 @@ __version_info__ = (1, 0, 0)
 __build_date__ = "2025-12-28"
 __license__ = "MIT"
 
+
 # Короткое описание
 def get_version_string():
     """Возвращает строку версии"""
     return f"v{__version__}"
+
 
 def get_full_version_info():
     """Возвращает полную информацию о версии"""
@@ -20,6 +22,7 @@ def get_full_version_info():
         "build_date": __build_date__,
         "license": __license__
     }
+
 
 if __name__ == "__main__":
     print(f"PSQL Mock Creator {get_version_string()}")

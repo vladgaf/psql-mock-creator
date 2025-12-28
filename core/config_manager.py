@@ -35,7 +35,7 @@ DATABASES_CONFIG = {
     },
     'air_travel': {
         'db_name': 'air_travel',
-        'description': 'База данных авиаперелетов',
+        'description': 'База данных авиа перелетов',
         'models_module': 'models.air_travel',
         'mock_data_folder': 'air_travel'
     }
@@ -43,7 +43,7 @@ DATABASES_CONFIG = {
 
 
 def get_postgres_config():
-    """Получает настройки PostgreSQL (загружает при первом вызове)"""
+    """Получает настройки PostgresSQL (загружает при первом вызове)"""
     global _POSTGRES_CONFIG
 
     if _POSTGRES_CONFIG is None:

@@ -4,9 +4,11 @@ from core.config_manager import create_database_connection
 # Создаем подключение к базе данных
 database = create_database_connection('air_travel')
 
+
 class BaseModel(Model):
     class Meta:
         database = database
+
 
 class Airline(BaseModel):
     iata_code = CharField(max_length=2, unique=True)
@@ -17,6 +19,7 @@ class Airline(BaseModel):
 
     class Meta:
         table_name = 'airlines'
+
 
 class Airport(BaseModel):
     iata_code = CharField(max_length=3, unique=True)
@@ -31,6 +34,7 @@ class Airport(BaseModel):
     class Meta:
         table_name = 'airports'
 
+
 class Aircraft(BaseModel):
     registration_number = CharField(max_length=10, unique=True)
     model = CharField(max_length=50)
@@ -42,6 +46,7 @@ class Aircraft(BaseModel):
 
     class Meta:
         table_name = 'aircrafts'
+
 
 class Flight(BaseModel):
     flight_number = CharField(max_length=10)
@@ -55,20 +60,21 @@ class Flight(BaseModel):
     base_price_economy = DecimalField(max_digits=10, decimal_places=2, null=True)
     base_price_business = DecimalField(max_digits=10, decimal_places=2, null=True)
     status = CharField(max_length=20, default='scheduled',
-                      choices=[
-                          ('scheduled', 'Запланирован'),
-                          ('boarding', 'Посадка'),
-                          ('departed', 'Вылетел'),
-                          ('arrived', 'Прибыл'),
-                          ('delayed', 'Задержан'),
-                          ('cancelled', 'Отменен')
-                      ])
+                       choices=[
+                           ('scheduled', 'Запланирован'),
+                           ('boarding', 'Посадка'),
+                           ('departed', 'Вылетел'),
+                           ('arrived', 'Прибыл'),
+                           ('delayed', 'Задержан'),
+                           ('cancelled', 'Отменен')
+                       ])
 
     class Meta:
         table_name = 'flights'
         indexes = (
             (('departure_time', 'status'), False),
         )
+
 
 class Passenger(BaseModel):
     ticket_number = CharField(max_length=20, unique=True)
@@ -91,11 +97,14 @@ class Passenger(BaseModel):
             (('flight', 'seat_number'), True),  # Уникальный индекс: место в рейсе
         )
 
+
 # Список всех моделей для этой БД
 MODELS = [Airline, Airport, Aircraft, Flight, Passenger]
 
+
 def get_models():
     return MODELS
+
 
 def get_database():
     return database

@@ -1,7 +1,6 @@
 import json
 import os
 import importlib
-import sys
 import traceback
 from datetime import datetime
 
@@ -125,7 +124,7 @@ class DatabaseManager:
             self._load_mock_data_smart(db_config, models_module, database)
 
             # Показываем статистику
-            self._show_database_stats(models_module, database)
+            self._show_database_stats(models_module)
 
             # Закрываем соединение
             database.close()
@@ -142,7 +141,7 @@ class DatabaseManager:
             try:
                 if 'database' in locals() and not database.is_closed():
                     database.close()
-            except:
+            except BaseException:
                 pass
             return False
 
@@ -190,7 +189,8 @@ class DatabaseManager:
             print(f"⚠️ Не удалось очистить таблицы: {e}")
             return False
 
-    def _create_database_tables(self, database, models):
+    @staticmethod
+    def _create_database_tables(database, models):
         """Безопасно создает таблицы базы данных"""
         try:
             print("📋 Создание таблиц...")
@@ -201,7 +201,8 @@ class DatabaseManager:
             print(f"❌ Ошибка при создании таблиц: {e}")
             return False
 
-    def _drop_all_views(self, database):
+    @staticmethod
+    def _drop_all_views(database):
         """Удаляет все VIEW из базы данных"""
         try:
             with database.connection_context():
@@ -273,7 +274,7 @@ class DatabaseManager:
         print(f"📂 Загрузка данных из: {db_config['mock_data_folder']}")
 
         # Определяем порядок загрузки
-        loading_order = self._get_loading_order(db_config['db_name'], models_module)
+        loading_order = self._get_loading_order(db_config['db_name'])
         print(f"🔀 Порядок загрузки: {', '.join(loading_order)}")
 
         # Создаем mapping имен файлов к классам моделей
@@ -287,7 +288,8 @@ class DatabaseManager:
         for table_name in loading_order:
             self._load_table_safely(mock_data_path, table_name, model_mapping, models_module, database)
 
-    def _get_loading_order(self, db_name, models_module):
+    @staticmethod
+    def _get_loading_order(db_name):
         """Определяет порядок загрузки данных"""
         loading_orders = {
             'school_world': ['teachers', 'classes', 'students', 'subjects', 'grades'],
@@ -359,7 +361,8 @@ class DatabaseManager:
         except Exception as e:
             print(f"  ❌ Критическая ошибка загрузки {table_name}: {e}")
 
-    def _process_dates(self, data):
+    @staticmethod
+    def _process_dates(data):
         """Обрабатывает поля с датами в данных"""
         processed_data = []
         for item in data:
@@ -375,7 +378,8 @@ class DatabaseManager:
 
     # ==================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ====================
 
-    def _show_database_stats(self, models_module, database):
+    @staticmethod
+    def _show_database_stats(models_module):
         """Показывает статистику по созданной базе данных"""
         print(f"\n📊 Статистика базы данных:")
 
