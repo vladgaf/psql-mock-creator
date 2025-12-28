@@ -18,7 +18,6 @@ def get_full_version_info():
         "version": __version__,
         "version_info": __version_info__,
         "build_date": __build_date__,
-        "author": __author__,
         "license": __license__
     }
 
