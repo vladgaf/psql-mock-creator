@@ -2,7 +2,7 @@ from datetime import datetime
 import os
 import threading
 
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QTimer, QSettings
 from PyQt6.QtGui import QFont, QTextCursor
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
@@ -13,17 +13,30 @@ from PyQt6.QtWidgets import (
 from core.config_manager import get_postgres_config, save_postgres_config
 from core.database_manager import DatabaseManager
 from core.logger import OutputLogger
-from ui.styles import APP_STYLESHEET, VERSION_WIDGET_STYLE, CONSOLE_BUTTON_STYLE, DISABLED_BUTTON_STYLE
+from ui.styles import (
+    LIGHT_THEME, DARK_THEME,
+    VERSION_WIDGET_STYLE_LIGHT, VERSION_WIDGET_STYLE_DARK,
+    CONSOLE_BUTTON_STYLE_LIGHT, CONSOLE_BUTTON_STYLE_DARK,
+    DISABLED_BUTTON_STYLE_LIGHT, DISABLED_BUTTON_STYLE_DARK
+)
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.logger = OutputLogger()
+
+        # Загрузка настроек темы
+        self.settings = QSettings("PSQLMockCreator", "AppSettings")
+        self.current_theme = self.settings.value("theme", "light", type=str)
+
         self.setup_ui()
         self.setup_status_bar()
         self.load_saved_config()
         self.setup_console_updater()
+
+        # Применяем сохраненную тему
+        self.apply_theme(self.current_theme)
 
     def setup_ui(self):
         """Создает все элементы интерфейса."""
@@ -130,35 +143,36 @@ class MainWindow(QMainWindow):
         self.console_output.setReadOnly(True)
         self.console_output.setFont(QFont("Courier New", 10))
 
-        # Кнопка очистки консоли с отдельным стилем
-        clear_btn = QPushButton("Очистить консоль")
-        clear_btn.clicked.connect(self.clear_console)
-        clear_btn.setStyleSheet(CONSOLE_BUTTON_STYLE)
+        # Кнопка очистки консоли
+        self.clear_btn = QPushButton("Очистить консоль")
+        self.clear_btn.clicked.connect(self.clear_console)
 
-        console_layout.addWidget(clear_btn)
+        console_layout.addWidget(self.clear_btn)
         console_layout.addWidget(self.console_output)
         console_group.setLayout(console_layout)
 
         main_layout.addWidget(console_group, 1)
 
-        # Применяем CSS-стили
-        self.setStyleSheet(APP_STYLESHEET)
-
-        # Применяем стиль для отключенных кнопок
-        self.create_btn.setStyleSheet(DISABLED_BUTTON_STYLE)
-        self.clean_btn.setStyleSheet(DISABLED_BUTTON_STYLE)
-        self.save_btn.setStyleSheet(DISABLED_BUTTON_STYLE)
-
     def setup_status_bar(self):
-        """Настройка статус бара с отображением версии"""
+        """Настройка статус бара с отображением версии и кнопкой темы"""
         status_bar = QStatusBar()
         self.setStatusBar(status_bar)
 
         # Левая часть: обычные сообщения
         status_bar.showMessage("Готово")
 
-        # Правая часть: версия с иконкой и стилями
+        # Кнопка переключения темы
+        self.theme_btn = QPushButton()
+        self.theme_btn.setObjectName("themeButton")
+        self.theme_btn.setFixedSize(30, 22)
+        self.theme_btn.clicked.connect(self.toggle_theme)
+        self.theme_btn.setToolTip("Переключить тему")
+
+        # Версия приложения
         version_widget = self.create_version_widget()
+
+        # Добавляем элементы в статус бар (справа налево)
+        status_bar.addPermanentWidget(self.theme_btn)
         status_bar.addPermanentWidget(version_widget)
 
         # Обновляем сообщения статуса через таймер
@@ -168,15 +182,14 @@ class MainWindow(QMainWindow):
 
     def create_version_widget(self):
         """Создает виджет с информацией о версии"""
-        from version import get_version_string
         try:
+            from version import get_version_string
             version_str = get_version_string()
         except ImportError:
             version_str = "v1.0.0"
 
         # Создаем контейнер для версии
         version_container = QWidget()
-        version_container.setStyleSheet(VERSION_WIDGET_STYLE)
         layout = QHBoxLayout(version_container)
         layout.setContentsMargins(10, 5, 10, 5)
         layout.setSpacing(5)
@@ -197,11 +210,81 @@ class MainWindow(QMainWindow):
         # Tooltip с полной информацией
         full_info = f"""<b>PSQL Mock Creator</b><br/>
                     Версия: {version_str}<br/>
+                    Тема: {self.current_theme}<br/>
                     <br/>
                     Готов к работе."""
         version_container.setToolTip(full_info)
 
         return version_container
+
+    def apply_theme(self, theme_name):
+        """Применяет выбранную тему."""
+        self.current_theme = theme_name
+
+        # Сохраняем выбор темы
+        self.settings.setValue("theme", theme_name)
+
+        if theme_name == "dark":
+            # Применяем темную тему
+            self.setStyleSheet(DARK_THEME)
+            self.theme_btn.setText("🌞")  # Солнце для переключения на светлую
+            self.clear_btn.setStyleSheet(CONSOLE_BUTTON_STYLE_DARK)
+
+            # Обновляем стиль виджета версии
+            version_widget = self.statusBar().findChild(QWidget)
+            if version_widget:
+                version_widget.setStyleSheet(VERSION_WIDGET_STYLE_DARK)
+
+            # Обновляем стили отключенных кнопок
+            self.update_disabled_buttons_style(DISABLED_BUTTON_STYLE_DARK)
+
+        else:
+            # Применяем светлую тему
+            self.setStyleSheet(LIGHT_THEME)
+            self.theme_btn.setText("🌙")  # Луна для переключения на темную
+            self.clear_btn.setStyleSheet(CONSOLE_BUTTON_STYLE_LIGHT)
+
+            # Обновляем стиль виджета версии
+            version_widget = self.statusBar().findChild(QWidget)
+            if version_widget:
+                version_widget.setStyleSheet(VERSION_WIDGET_STYLE_LIGHT)
+
+            # Обновляем стили отключенных кнопок
+            self.update_disabled_buttons_style(DISABLED_BUTTON_STYLE_LIGHT)
+
+        # Логируем смену темы
+        self.log_to_console(f"[THEME] Применена {theme_name} тема\n")
+
+        # Обновляем статус бар
+        self.statusBar().showMessage(f"Тема: {theme_name}", 2000)
+
+    def update_disabled_buttons_style(self, style):
+        """Обновляет стили для отключенных кнопок."""
+        # Сохраняем текущее состояние кнопок
+        create_enabled = self.create_btn.isEnabled()
+        clean_enabled = self.clean_btn.isEnabled()
+        save_enabled = self.save_btn.isEnabled()
+
+        # Временно отключаем, чтобы применить стиль
+        if not create_enabled:
+            self.create_btn.setStyleSheet(style)
+        else:
+            self.create_btn.setStyleSheet("")
+
+        if not clean_enabled:
+            self.clean_btn.setStyleSheet(style)
+        else:
+            self.clean_btn.setStyleSheet("")
+
+        if not save_enabled:
+            self.save_btn.setStyleSheet(style)
+        else:
+            self.save_btn.setStyleSheet("")
+
+    def toggle_theme(self):
+        """Переключает тему между светлой и темной."""
+        new_theme = "dark" if self.current_theme == "light" else "light"
+        self.apply_theme(new_theme)
 
     def update_status_message(self):
         """Обновляет сообщение в статус баре"""
@@ -210,6 +293,7 @@ class MainWindow(QMainWindow):
             "Ожидание действий пользователя",
             "Базы данных: 4 доступно",
             f"Версия: {self.get_app_version()}",
+            f"Тема: {self.current_theme}",
             f"Время: {datetime.now().strftime('%H:%M')}"
         ]
 
@@ -323,9 +407,14 @@ class MainWindow(QMainWindow):
 
         # Применяем/снимаем стиль для отключенных кнопок
         if not enabled:
-            self.create_btn.setStyleSheet(DISABLED_BUTTON_STYLE)
-            self.clean_btn.setStyleSheet(DISABLED_BUTTON_STYLE)
-            self.save_btn.setStyleSheet(DISABLED_BUTTON_STYLE)
+            if self.current_theme == "dark":
+                style = DISABLED_BUTTON_STYLE_DARK
+            else:
+                style = DISABLED_BUTTON_STYLE_LIGHT
+
+            self.create_btn.setStyleSheet(style)
+            self.clean_btn.setStyleSheet(style)
+            self.save_btn.setStyleSheet(style)
         else:
             self.create_btn.setStyleSheet("")
             self.clean_btn.setStyleSheet("")
