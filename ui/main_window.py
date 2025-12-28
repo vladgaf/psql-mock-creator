@@ -1,8 +1,10 @@
 from datetime import datetime
 import os
 import threading
+import sys
+import traceback
 
-from PyQt6.QtCore import QTimer, QSettings
+from PyQt6.QtCore import QTimer, QSettings, QObject, pyqtSignal, pyqtSlot
 from PyQt6.QtGui import QFont, QTextCursor
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
@@ -12,7 +14,7 @@ from PyQt6.QtWidgets import (
 
 from core.config_manager import get_postgres_config, save_postgres_config
 from core.database_manager import DatabaseManager
-from core.logger import OutputLogger
+from core.logger import QtOutputLogger
 from ui.styles import (
     LIGHT_THEME, DARK_THEME,
     VERSION_WIDGET_STYLE_LIGHT, VERSION_WIDGET_STYLE_DARK,
@@ -21,10 +23,19 @@ from ui.styles import (
 )
 
 
+# Класс для безопасной передачи данных между потоками
+class WorkerSignals(QObject):
+    finished = pyqtSignal()
+    error = pyqtSignal(str)
+    log = pyqtSignal(str)
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.logger = OutputLogger()
+
+        # Для отслеживания активных потоков
+        self.active_workers = []
 
         # Загрузка настроек темы
         self.settings = QSettings("PSQLMockCreator", "AppSettings")
@@ -33,6 +44,10 @@ class MainWindow(QMainWindow):
         self.setup_ui()
         self.setup_status_bar()
         self.load_saved_config()
+
+        self.logger = QtOutputLogger(self.console_output)  # Используем console_output, а не ui.textEdit_console
+        self.logger.start_logging()
+
         self.setup_console_updater()
 
         # Применяем сохраненную тему
@@ -153,6 +168,150 @@ class MainWindow(QMainWindow):
 
         main_layout.addWidget(console_group, 1)
 
+    def create_databases(self):
+        """Обработчик кнопки 'Создать базы данных'."""
+        selected = self.get_selected_databases()
+        if not selected:
+            QMessageBox.warning(self, "Внимание", "Выберите хотя бы одну базу данных!")
+            return
+
+        config = self.get_current_config()
+        self.run_database_operation("create", selected, config)
+
+    def clean_databases(self):
+        """Обработчик кнопки 'Очистить базы данных'."""
+        selected = self.get_selected_databases()
+        if not selected:
+            QMessageBox.warning(self, "Внимание", "Выберите хотя бы одну базу данных!")
+            return
+
+        reply = QMessageBox.question(
+            self, 'Подтверждение',
+            f'Вы уверены, что хотите очистить {len(selected)} баз данных?\nЭто действие удалит все данные.',
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+
+        if reply == QMessageBox.StandardButton.Yes:
+            config = self.get_current_config()
+            self.run_database_operation("clean", selected, config)
+
+    def run_database_operation(self, operation, databases, config):
+        """Запускает операцию с БД в отдельном потоке."""
+        self.set_buttons_enabled(False)
+        self.logger.start_logging()
+
+        # Создаем объект сигналов для этого потока
+        worker_signals = WorkerSignals()
+        worker_signals.finished.connect(lambda: self.on_worker_finished(worker_signals))
+        worker_signals.error.connect(self.on_worker_error)
+        worker_signals.log.connect(self.on_worker_log)
+
+        def worker():
+            try:
+                db_manager = DatabaseManager(config)
+                if operation == "create":
+                    db_manager.create_databases(databases)
+                else:
+                    db_manager.clean_databases(databases)
+                worker_signals.finished.emit()
+            except Exception as e:
+                error_msg = f"[ERROR] Ошибка: {e}\n{traceback.format_exc()}"
+                worker_signals.error.emit(error_msg)
+
+        thread = threading.Thread(target=worker, daemon=True)
+        self.active_workers.append((thread, worker_signals))
+
+        thread.start()
+
+        op_name = "создание" if operation == "create" else "очистка"
+        self.log_to_console(f"\n{'=' * 60}\n")
+        self.log_to_console(f"Запуск {op_name} баз данных: {', '.join(databases)}\n")
+        self.log_to_console(f"{'=' * 60}\n\n")
+        self.statusBar().showMessage(f"Выполняется {op_name}...")
+
+    @pyqtSlot()
+    def on_worker_finished(self, worker_signals):
+        """Слот для завершения работы потока."""
+        # Удаляем завершенный поток из списка активных
+        for i, (thread, signals) in enumerate(self.active_workers):
+            if signals == worker_signals:
+                self.active_workers.pop(i)
+                break
+
+        self.logger.stop_logging()
+        self.set_buttons_enabled(True)
+        self.statusBar().showMessage("Операция завершена", 3000)
+
+    @pyqtSlot(str)
+    def on_worker_error(self, error_msg):
+        """Слот для обработки ошибок из потока."""
+        print(error_msg)  # Вывод в системную консоль
+        self.log_to_console(error_msg)  # Вывод в UI консоль
+
+    @pyqtSlot(str)
+    def on_worker_log(self, log_msg):
+        """Слот для получения логов из потока."""
+        self.log_to_console(log_msg)
+
+    def setup_console_updater(self):
+        """Настраивает таймер для обновления консоли."""
+        self.console_timer = QTimer()
+        self.console_timer.timeout.connect(self.update_console_display)
+        self.console_timer.start(100)
+
+    def update_console_display(self):
+        """Берет накопленные логи из OutputLogger и выводит в QTextEdit."""
+        if hasattr(self, 'logger'):
+            logs = self.logger.get_logs()
+            if logs:
+                self.console_output.moveCursor(QTextCursor.MoveOperation.End)
+                self.console_output.insertPlainText(logs)
+                self.console_output.ensureCursorVisible()
+
+    def log_to_console(self, message):
+        """Прямой вывод сообщения в консоль (для UI событий)."""
+        self.console_output.moveCursor(QTextCursor.MoveOperation.End)
+        self.console_output.insertPlainText(message)
+        self.console_output.ensureCursorVisible()
+
+    def closeEvent(self, event):
+        """Обработчик закрытия окна - ВАЖНО для предотвращения падений!"""
+        print("Начало корректного закрытия приложения...")
+
+        # 1. Останавливаем все таймеры
+        if hasattr(self, 'console_timer'):
+            self.console_timer.stop()
+
+        if hasattr(self, 'status_timer'):
+            self.status_timer.stop()
+
+        # 2. Ожидаем завершения всех рабочих потоков
+        print(f"Ожидание завершения {len(self.active_workers)} активных потоков...")
+        for thread, _ in self.active_workers:
+            if thread.is_alive():
+                thread.join(timeout=2.0)  # Ждем до 2 секунд
+
+        # 3. Останавливаем логгирование
+        if hasattr(self, 'logger'):
+            self.logger.stop_logging()
+
+        # 4. Сохраняем настройки
+        self.settings.setValue("theme", self.current_theme)
+
+        # 5. Вызываем явный flush для stdout
+        sys.stdout.flush()
+
+        # 6. Закрываем все соединения с БД (если возможно)
+        try:
+            # Здесь можно добавить закрытие соединений DatabaseManager
+            pass
+        except:
+            pass
+
+        print("Приложение корректно завершено.")
+        super().closeEvent(event)
+
+    # Остальные методы остаются без изменений...
     def setup_status_bar(self):
         """Настройка статус бара с отображением версии и кнопкой темы"""
         status_bar = QStatusBar()
@@ -345,60 +504,6 @@ class MainWindow(QMainWindow):
         self.log_to_console("[INFO] Настройки сохранены в config/postgres.json\n")
         self.statusBar().showMessage("Настройки сохранены", 3000)
 
-    def create_databases(self):
-        """Обработчик кнопки 'Создать базы данных'."""
-        selected = self.get_selected_databases()
-        if not selected:
-            QMessageBox.warning(self, "Внимание", "Выберите хотя бы одну базу данных!")
-            return
-
-        config = self.get_current_config()
-        self.run_database_operation("create", selected, config)
-
-    def clean_databases(self):
-        """Обработчик кнопки 'Очистить базы данных'."""
-        selected = self.get_selected_databases()
-        if not selected:
-            QMessageBox.warning(self, "Внимание", "Выберите хотя бы одну базу данных!")
-            return
-
-        reply = QMessageBox.question(
-            self, 'Подтверждение',
-            f'Вы уверены, что хотите очистить {len(selected)} баз данных?\nЭто действие удалит все данные.',
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-        )
-
-        if reply == QMessageBox.StandardButton.Yes:
-            config = self.get_current_config()
-            self.run_database_operation("clean", selected, config)
-
-    def run_database_operation(self, operation, databases, config):
-        """Запускает операцию с БД в отдельном потоке."""
-        self.set_buttons_enabled(False)
-        self.logger.start_logging()
-
-        def worker():
-            try:
-                db_manager = DatabaseManager(config)
-                if operation == "create":
-                    db_manager.create_databases(databases)
-                else:
-                    db_manager.clean_databases(databases)
-            except Exception as e:
-                print(f"[ERROR] Ошибка: {e}")
-            finally:
-                self.logger.stop_logging()
-                self.set_buttons_enabled(True)
-
-        thread = threading.Thread(target=worker, daemon=True)
-        thread.start()
-
-        op_name = "создание" if operation == "create" else "очистка"
-        self.log_to_console(f"\n{'=' * 60}\n")
-        self.log_to_console(f"Запуск {op_name} баз данных: {', '.join(databases)}\n")
-        self.log_to_console(f"{'=' * 60}\n\n")
-        self.statusBar().showMessage(f"Выполняется {op_name}...")
-
     def set_buttons_enabled(self, enabled):
         """Блокирует или разблокирует кнопки управления."""
         self.create_btn.setEnabled(enabled)
@@ -419,26 +524,6 @@ class MainWindow(QMainWindow):
             self.create_btn.setStyleSheet("")
             self.clean_btn.setStyleSheet("")
             self.save_btn.setStyleSheet("")
-
-    def setup_console_updater(self):
-        """Настраивает таймер для обновления консоли."""
-        self.console_timer = QTimer()
-        self.console_timer.timeout.connect(self.update_console_display)
-        self.console_timer.start(100)
-
-    def update_console_display(self):
-        """Берет накопленные логи из OutputLogger и выводит в QTextEdit."""
-        logs = self.logger.get_logs()
-        if logs:
-            self.console_output.moveCursor(QTextCursor.MoveOperation.End)
-            self.console_output.insertPlainText(logs)
-            self.console_output.ensureCursorVisible()
-
-    def log_to_console(self, message):
-        """Прямой вывод сообщения в консоль (для UI событий)."""
-        self.console_output.moveCursor(QTextCursor.MoveOperation.End)
-        self.console_output.insertPlainText(message)
-        self.console_output.ensureCursorVisible()
 
     def clear_console(self):
         """Очищает окно консоли."""

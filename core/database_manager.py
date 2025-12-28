@@ -67,7 +67,7 @@ class DatabaseManager:
 
         print(f"\n{'=' * 60}")
         print(f"🧹 Очищено баз: {success_count} из {len(databases_list)}")
-        print(f"{'=' * 60}")
+        print(f"{'=' * 60}\n")
 
         return success_count
 
@@ -200,6 +200,7 @@ class DatabaseManager:
         except Exception as e:
             print(f"❌ Ошибка при создании таблиц: {e}")
             return False
+
 
     @staticmethod
     def _drop_all_views(database):
