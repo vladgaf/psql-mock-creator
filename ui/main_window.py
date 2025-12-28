@@ -393,7 +393,7 @@ class MainWindow(QMainWindow):
         thread = threading.Thread(target=worker, daemon=True)
         thread.start()
 
-        op_name = "создания" if operation == "create" else "очистки"
+        op_name = "создание" if operation == "create" else "очистка"
         self.log_to_console(f"\n{'=' * 60}\n")
         self.log_to_console(f"Запуск {op_name} баз данных: {', '.join(databases)}\n")
         self.log_to_console(f"{'=' * 60}\n\n")

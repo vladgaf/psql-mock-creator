@@ -27,8 +27,8 @@ QGroupBox {
 QGroupBox::title {
     subcontrol-origin: margin;
     left: 12px;
-    padding: 0 8px 0 8px;
     color: #333333;
+    padding: 0 8px 0 8px;
     border-radius: 5px;
     border: 1px solid #444444;
     background-color: white;
@@ -204,12 +204,11 @@ QGroupBox {
 QGroupBox::title {
     subcontrol-origin: margin;
     left: 12px;
-    padding: 0 8px 0 8px;
     color: #e0e0e0;
-    background-color: #2d2d2d;
+    padding: 0 8px 0 8px;
     border-radius: 5px;
     border: 1px solid #444444;
-    padding: 2px 5px;
+    background-color: #2d2d2d;
 }
 
 /* Поля ввода */
