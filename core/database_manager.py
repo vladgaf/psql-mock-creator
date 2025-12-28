@@ -1,25 +1,160 @@
 import json
 import os
 import importlib
+import sys
+import traceback
 from datetime import datetime
-from config import MOCK_DATA_DIR, DATABASES_CONFIG, POSTGRES_CONFIG
+
+from peewee import PostgresqlDatabase
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
+from core.config_manager import MOCK_DATA_DIR, DATABASES_CONFIG
+
 
 class DatabaseManager:
-    def __init__(self):
+    def __init__(self, config):
+        """Инициализация с конфигом (словарем)."""
+        self.config = config
         self.created_databases = []
 
-    def create_database_if_not_exists(self, db_name):
+        # Используем конфиг для подключения к postgres
+        self.db = PostgresqlDatabase(
+            'postgres',
+            user=self.config.get('user', 'postgres'),
+            password=self.config.get('password', ''),
+            host=self.config.get('host', 'localhost'),
+            port=self.config.get('port', 5432)
+        )
+
+    # ==================== ОСНОВНЫЕ ПУБЛИЧНЫЕ МЕТОДЫ ====================
+
+    def create_databases(self, databases_list):
+        """Создает несколько выбранных баз данных"""
+        print(f"🎓 СОЗДАНИЕ ВЫБРАННЫХ БАЗ ДАННЫХ")
+        print("=" * 60)
+        print(f"📡 Подключение к: {self.config['host']}:{self.config['port']}")
+        print(f"👤 Пользователь: {self.config['user']}")
+        print(f"📋 Выбрано баз: {len(databases_list)}")
+        print("=" * 60)
+
+        success_count = 0
+
+        for db_name in databases_list:
+            if db_name in DATABASES_CONFIG:
+                if self._create_single_database(db_name, DATABASES_CONFIG[db_name]):
+                    success_count += 1
+            else:
+                print(f"❌ База данных '{db_name}' не найдена в конфигурации")
+
+        self._show_create_summary(success_count, databases_list)
+        return success_count
+
+    def clean_databases(self, databases_list):
+        """Очищает выбранные базы данных"""
+        print(f"🧹 ОЧИСТКА ВЫБРАННЫХ БАЗ ДАННЫХ")
+        print("=" * 60)
+        print(f"📋 Выбрано баз для очистки: {len(databases_list)}")
+        print("=" * 60)
+
+        success_count = 0
+
+        for db_name in databases_list:
+            if db_name in DATABASES_CONFIG:
+                if self._clean_single_database(db_name, DATABASES_CONFIG[db_name]):
+                    success_count += 1
+            else:
+                print(f"❌ База данных '{db_name}' не найдена в конфигурации")
+
+        print(f"\n{'=' * 60}")
+        print(f"🧹 Очищено баз: {success_count} из {len(databases_list)}")
+        print(f"{'=' * 60}")
+
+        return success_count
+
+    def create_all_databases(self):
+        """Создает все базы данных из конфигурации"""
+        print("🎓 ЗАПУСК СОЗДАНИЯ УЧЕБНЫХ БАЗ ДАННЫХ PostgreSQL")
+        print("=" * 60)
+        print(f"📡 Подключение к: {self.config['host']}:{self.config['port']}")
+        print(f"👤 Пользователь: {self.config['user']}")
+        print("=" * 60)
+
+        success_count = 0
+        for db_name, db_config in DATABASES_CONFIG.items():
+            if self._create_single_database(db_name, db_config):
+                success_count += 1
+
+        self._show_create_summary(success_count, list(DATABASES_CONFIG.keys()))
+        return success_count
+
+    # ==================== МЕТОДЫ СОЗДАНИЯ БАЗ ДАННЫХ ====================
+
+    def _create_single_database(self, db_name, db_config):
+        """Создает одну базу данных с таблицами и данными"""
+        print(f"\n{'=' * 50}")
+        print(f"Создание базы данных: {db_config['description']}")
+        print(f"Имя базы: {db_config['db_name']}")
+        print(f"{'=' * 50}")
+
+        try:
+            # Создаем базу данных если она не существует
+            if not self._create_database_if_not_exists(db_config['db_name']):
+                return False
+
+            # Импортируем модели для этой БД
+            models_module = importlib.import_module(db_config['models_module'])
+            database = models_module.get_database()
+            models = models_module.get_models()
+
+            # Подключаемся к базе данных
+            print("🔗 Подключение к базе данных...")
+            database.connect()
+            print("✅ Подключение к базе данных установлено")
+
+            # Очищаем и создаем таблицы
+            if not self._drop_database_tables(database, models):
+                print("⚠️ Продолжаем без очистки таблиц")
+
+            if not self._create_database_tables(database, models):
+                print("❌ Не удалось создать таблицы, пропускаем базу")
+                database.close()
+                return False
+
+            # Загружаем моковые данные
+            self._load_mock_data_smart(db_config, models_module, database)
+
+            # Показываем статистику
+            self._show_database_stats(models_module, database)
+
+            # Закрываем соединение
+            database.close()
+            print("✅ Соединение с базой данных закрыто")
+
+            self.created_databases.append(db_config['db_name'])
+            return True
+
+        except Exception as e:
+            print(f"❌ Ошибка при создании базы {db_name}: {e}")
+            traceback.print_exc()
+
+            # Пытаемся закрыть соединение в случае ошибки
+            try:
+                if 'database' in locals() and not database.is_closed():
+                    database.close()
+            except:
+                pass
+            return False
+
+    def _create_database_if_not_exists(self, db_name):
         """Создает базу данных PostgreSQL если она не существует"""
         try:
-            # Подключаемся к базе postgres для создания новой БД
+            # Используем self.config вместо POSTGRES_CONFIG
             conn = psycopg2.connect(
-                user=POSTGRES_CONFIG['user'],
-                password=POSTGRES_CONFIG['password'],
-                host=POSTGRES_CONFIG['host'],
-                port=POSTGRES_CONFIG['port'],
+                user=self.config.get('user', 'postgres'),
+                password=self.config.get('password', ''),
+                host=self.config.get('host', 'localhost'),
+                port=self.config.get('port', 5432),
                 database='postgres'
             )
             conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -43,7 +178,7 @@ class DatabaseManager:
             print(f"❌ Ошибка при создании базы данных '{db_name}': {e}")
             return False
 
-    def drop_database_tables(self, database, models):
+    def _drop_database_tables(self, database, models):
         """Безопасно удаляет таблицы базы данных"""
         try:
             print("🧹 Очистка существующих таблиц...")
@@ -55,10 +190,20 @@ class DatabaseManager:
             print(f"⚠️ Не удалось очистить таблицы: {e}")
             return False
 
+    def _create_database_tables(self, database, models):
+        """Безопасно создает таблицы базы данных"""
+        try:
+            print("📋 Создание таблиц...")
+            database.create_tables(models)
+            print("✅ Таблицы созданы успешно!")
+            return True
+        except Exception as e:
+            print(f"❌ Ошибка при создании таблиц: {e}")
+            return False
+
     def _drop_all_views(self, database):
         """Удаляет все VIEW из базы данных"""
         try:
-            # Подключаемся к базе данных
             with database.connection_context():
                 cursor = database.execute_sql("""
                     SELECT table_name 
@@ -80,29 +225,16 @@ class DatabaseManager:
             print(f"⚠️ Ошибка при получении списка VIEW: {e}")
             raise
 
-    def create_database_tables(self, database, models):
-        """Безопасно создает таблицы базы данных"""
-        try:
-            print("📋 Создание таблиц...")
-            database.create_tables(models)
-            print("✅ Таблицы созданы успешно!")
-            return True
-        except Exception as e:
-            print(f"❌ Ошибка при создании таблиц: {e}")
-            return False
+    # ==================== МЕТОДЫ ОЧИСТКИ БАЗ ДАННЫХ ====================
 
-    def create_database(self, db_name, db_config):
-        """Создает одну базу данных с таблицами и данными"""
+    def _clean_single_database(self, db_name, db_config):
+        """Очищает одну базу данных"""
         print(f"\n{'=' * 50}")
-        print(f"Создание базы данных: {db_config['description']}")
+        print(f"Очистка базы данных: {db_config['description']}")
         print(f"Имя базы: {db_config['db_name']}")
         print(f"{'=' * 50}")
 
         try:
-            # Создаем базу данных если она не существует
-            if not self.create_database_if_not_exists(db_config['db_name']):
-                return False
-
             # Импортируем модели для этой БД
             models_module = importlib.import_module(db_config['models_module'])
             database = models_module.get_database()
@@ -113,52 +245,22 @@ class DatabaseManager:
             database.connect()
             print("✅ Подключение к базе данных установлено")
 
-            # Очищаем и создаем таблицы
-            if not self.drop_database_tables(database, models):
-                print("⚠️ Продолжаем без очистки таблиц")
-
-            if not self.create_database_tables(database, models):
-                print("❌ Не удалось создать таблицы, пропускаем базу")
+            # Очищаем таблицы
+            if not self._drop_database_tables(database, models):
+                print("⚠️ Не удалось очистить таблицы")
                 database.close()
                 return False
 
-            # Загружаем моковые данные
-            self._load_mock_data_smart(db_config, models_module, database)
-
-            # Показываем статистику
-            self._show_database_stats(models_module, database)
-
-            # Закрываем соединение
+            print("✅ База данных очищена")
             database.close()
-            print("✅ Соединение с базой данных закрыто")
-
-            self.created_databases.append(db_config['db_name'])
             return True
 
         except Exception as e:
-            print(f"❌ Ошибка при создании базы {db_name}: {e}")
-            import traceback
+            print(f"❌ Ошибка при очистке базы {db_name}: {e}")
             traceback.print_exc()
-
-            # Пытаемся закрыть соединение в случае ошибки
-            try:
-                if 'database' in locals() and not database.is_closed():
-                    database.close()
-            except:
-                pass
             return False
 
-    def _get_loading_order(self, db_name, models_module):
-        """Определяет порядок загрузки данных"""
-        loading_orders = {
-            'school_world': ['teachers', 'classes', 'students', 'subjects', 'grades'],
-            'games_easy': ['games'],
-            'games_shop': ['games', 'customers', 'orders', 'order_items'],
-            'air_travel': ['airlines', 'airports', 'aircrafts', 'flights', 'passengers']
-
-        }
-
-        return loading_orders.get(db_name, [])
+    # ==================== МЕТОДЫ ЗАГРУЗКИ ДАННЫХ ====================
 
     def _load_mock_data_smart(self, db_config, models_module, database):
         """Умная загрузка данных с обработкой ошибок для каждой записи"""
@@ -184,6 +286,16 @@ class DatabaseManager:
         # Загружаем данные в правильном порядке
         for table_name in loading_order:
             self._load_table_safely(mock_data_path, table_name, model_mapping, models_module, database)
+
+    def _get_loading_order(self, db_name, models_module):
+        """Определяет порядок загрузки данных"""
+        loading_orders = {
+            'school_world': ['teachers', 'classes', 'students', 'subjects', 'grades'],
+            'games_easy': ['games'],
+            'games_shop': ['games', 'customers', 'orders', 'order_items'],
+            'air_travel': ['airlines', 'airports', 'aircrafts', 'flights', 'passengers']
+        }
+        return loading_orders.get(db_name, [])
 
     def _load_table_safely(self, mock_data_path, table_name, model_mapping, models_module, database):
         """Безопасно загружает данные для одной таблицы"""
@@ -223,7 +335,6 @@ class DatabaseManager:
 
             for i, item in enumerate(processed_data):
                 try:
-                    # Используем отдельную транзакцию для каждой записи
                     with database.atomic():
                         model_class.create(**item)
                     inserted_count += 1
@@ -232,7 +343,6 @@ class DatabaseManager:
                     errors_count += 1
                     error_msg = str(e)
 
-                    # Определяем тип ошибки для более информативного сообщения
                     if 'duplicate key' in error_msg or 'unique constraint' in error_msg:
                         print(f"    ⚠️ Дубликат записи {i + 1}: пропускаем")
                     elif 'foreign key' in error_msg.lower():
@@ -263,6 +373,8 @@ class DatabaseManager:
             processed_data.append(processed_item)
         return processed_data
 
+    # ==================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ====================
+
     def _show_database_stats(self, models_module, database):
         """Показывает статистику по созданной базе данных"""
         print(f"\n📊 Статистика базы данных:")
@@ -274,30 +386,14 @@ class DatabaseManager:
             except Exception as e:
                 print(f"   {model.__name__}: ошибка при подсчете - {e}")
 
-    def create_all_databases(self):
-        """Создает все базы данных из конфигурации"""
-        print("🎓 ЗАПУСК СОЗДАНИЯ УЧЕБНЫХ БАЗ ДАННЫХ PostgreSQL")
-        print("=" * 60)
-        print(f"📡 Подключение к: {POSTGRES_CONFIG['host']}:{POSTGRES_CONFIG['port']}")
-        print(f"👤 Пользователь: {POSTGRES_CONFIG['user']}")
-        print("=" * 60)
-
-        success_count = 0
-        for db_name, db_config in DATABASES_CONFIG.items():
-            if self.create_database(db_name, db_config):
-                success_count += 1
-
-        self._show_summary(success_count)
-
-    def _show_summary(self, success_count):
-        """Показывает итоговую сводку"""
+    def _show_create_summary(self, success_count, databases_list):
+        """Показывает итоговую сводку создания"""
         print(f"\n{'=' * 60}")
         print("🎉 ИТОГИ СОЗДАНИЯ БАЗ ДАННЫХ")
         print(f"{'=' * 60}")
-        print(f"✅ Успешно создано: {success_count} из {len(DATABASES_CONFIG)} баз")
-        print(f"📁 Созданные базы: {', '.join(self.created_databases)}")
-
+        print(f"✅ Успешно создано: {success_count} из {len(databases_list)} баз")
         if self.created_databases:
+            print(f"📁 Созданные базы: {', '.join(self.created_databases)}")
             print(f"\n💡 Примеры подключения:")
             for db in self.created_databases:
-                print(f"   psql -h localhost -U postgres -d {db}")
+                print(f"   psql -h {self.config['host']} -U {self.config['user']} -d {db}")
