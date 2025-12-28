@@ -86,6 +86,7 @@ QCheckBox {
 QCheckBox::indicator {
     width: 18px;
     height: 18px;
+    border: 2px solid red;
 }
 
 QCheckBox::indicator:checked {
