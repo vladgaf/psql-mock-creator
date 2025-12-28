@@ -105,6 +105,7 @@ psql-mock-creator/
 ├── main.py                # Точка входа для GUI
 ├── cli.py                 # Точка входа для CLI
 ├── requirements.txt       # Зависимости Python
+├── version.py             # Версия приложения
 └── README.md             # Эта документация
 ```
 
