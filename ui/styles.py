@@ -1,3 +1,7 @@
+"""
+Стили для PyQt6 приложения PSQL Mock Creator
+"""
+
 APP_STYLESHEET = """
 /* Основное окно */
 QMainWindow {
@@ -86,11 +90,109 @@ QCheckBox {
 QCheckBox::indicator {
     width: 18px;
     height: 18px;
-    border: 2px solid red;
 }
 
 QCheckBox::indicator:checked {
     background-color: #4CAF50;
     border: 2px solid #388E3C;
 }
+
+/* Статус бар */
+QStatusBar {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    color: #6c757d;
+    font-size: 11px;
+}
+
+QStatusBar::item {
+    border: none;
+}
+
+/* Версия в статус баре */
+QLabel#versionLabel {
+    color: #495057;
+    font-weight: bold;
+    padding: 2px 6px;
+    background-color: rgba(108, 117, 125, 0.1);
+    border-radius: 3px;
+    border: 1px solid rgba(108, 117, 125, 0.2);
+}
+
+QLabel#buildLabel {
+    color: #868e96;
+    font-size: 9px;
+}
 """
+
+# Дополнительные стили для виджета версии
+VERSION_WIDGET_STYLE = """
+QWidget {
+    border-radius: 3px;
+    padding: 2px;
+}
+"""
+
+# Стили для кнопки очистки консоли
+CONSOLE_BUTTON_STYLE = """
+QPushButton {
+    background-color: #6c757d;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+QPushButton:hover {
+    background-color: #5a6268;
+}
+"""
+
+# Стили для полей ввода при ошибке
+ERROR_FIELD_STYLE = """
+QLineEdit {
+    border: 2px solid #f44336;
+    background-color: #fff5f5;
+}
+"""
+
+# Стили для полей ввода при успехе
+SUCCESS_FIELD_STYLE = """
+QLineEdit {
+    border: 2px solid #4CAF50;
+}
+"""
+
+# Стили для кнопок в отключенном состоянии
+DISABLED_BUTTON_STYLE = """
+QPushButton:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    opacity: 0.7;
+}
+"""
+
+# Стили для выделенного текста в консоли
+CONSOLE_HIGHLIGHT_STYLES = {
+    'success': 'color: #4CAF50; font-weight: bold;',
+    'error': 'color: #f44336; font-weight: bold;',
+    'warning': 'color: #ff9800; font-weight: bold;',
+    'info': 'color: #2196F3; font-weight: normal;',
+    'timestamp': 'color: #9e9e9e; font-style: italic;',
+}
+
+# Цветовая палитра приложения
+COLOR_PALETTE = {
+    'primary': '#2196F3',
+    'secondary': '#4CAF50',
+    'danger': '#f44336',
+    'warning': '#ff9800',
+    'info': '#17a2b8',
+    'light': '#f8f9fa',
+    'dark': '#343a40',
+    'success': '#28a745',
+    'background': '#f0f0f0',
+    'console_bg': '#1e1e1e',
+    'console_text': '#d4d4d4',
+}

@@ -1,17 +1,19 @@
-import os
 from datetime import datetime
+import os
+import threading
+
+from PyQt6.QtCore import QTimer
+from PyQt6.QtGui import QFont, QTextCursor
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
     QGroupBox, QPushButton, QCheckBox, QTextEdit, QLabel,
-    QLineEdit, QMessageBox, QFrame, QApplication
+    QLineEdit, QMessageBox, QFrame, QStatusBar
 )
-from PyQt6.QtCore import QTimer
-from PyQt6.QtGui import QIcon, QFont, QTextCursor
 
 from core.config_manager import get_postgres_config, save_postgres_config
 from core.database_manager import DatabaseManager
 from core.logger import OutputLogger
-from ui.styles import APP_STYLESHEET
+from ui.styles import APP_STYLESHEET, VERSION_WIDGET_STYLE, CONSOLE_BUTTON_STYLE, DISABLED_BUTTON_STYLE
 
 
 class MainWindow(QMainWindow):
@@ -19,13 +21,14 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.logger = OutputLogger()
         self.setup_ui()
+        self.setup_status_bar()
         self.load_saved_config()
         self.setup_console_updater()
 
     def setup_ui(self):
         """Создает все элементы интерфейса."""
         self.setWindowTitle("PSQL Mock Creator")
-        self.setGeometry(100, 100, 900, 700)  # x, y, width, height
+        self.setGeometry(100, 100, 900, 700)
 
         # Центральный виджет
         central_widget = QWidget()
@@ -71,30 +74,29 @@ class MainWindow(QMainWindow):
 
         for i, (db_id, db_label) in enumerate(databases):
             checkbox = QCheckBox(db_label)
-            checkbox.setChecked(True)  # По умолчанию выбраны
+            checkbox.setChecked(True)
             self.db_checkboxes[db_id] = checkbox
-            # Располагаем в 2 колонки
             db_layout.addWidget(checkbox, i // 2, i % 2)
 
         db_group.setLayout(db_layout)
         main_layout.addWidget(db_group)
 
-        ## ===== 3. СЕКЦИЯ: Кнопки управления =====
+        # ===== 3. СЕКЦИЯ: Кнопки управления =====
         button_frame = QFrame()
         button_layout = QHBoxLayout(button_frame)
-        button_layout.setContentsMargins(0, 10, 0, 10)  # Отступы сверху и снизу
+        button_layout.setContentsMargins(0, 10, 0, 10)
 
         # Создаем контейнер для центрирования кнопок
         button_container = QWidget()
         button_container_layout = QHBoxLayout(button_container)
-        button_container_layout.setSpacing(15)  # Расстояние между кнопками
+        button_container_layout.setSpacing(15)
         button_container_layout.setContentsMargins(0, 0, 0, 0)
 
         # Кнопка "Создать базы данных"
         self.create_btn = QPushButton("🗄️ Создать базы данных")
         self.create_btn.clicked.connect(self.create_databases)
         self.create_btn.setObjectName("createButton")
-        self.create_btn.setMinimumWidth(150)  # Минимальная ширина для одинакового размера
+        self.create_btn.setMinimumWidth(150)
 
         # Кнопка "Очистить базы данных"
         self.clean_btn = QPushButton("🧹 Очистить базы данных")
@@ -113,10 +115,10 @@ class MainWindow(QMainWindow):
         button_container_layout.addWidget(self.clean_btn)
         button_container_layout.addWidget(self.save_btn)
 
-        # Центрируем контейнер с кнопками в основном layout
-        button_layout.addStretch()  # Растягиваемое пространство слева
-        button_layout.addWidget(button_container)  # Контейнер с кнопками по центру
-        button_layout.addStretch()  # Растягиваемое пространство справа
+        # Центрируем контейнер с кнопками
+        button_layout.addStretch()
+        button_layout.addWidget(button_container)
+        button_layout.addStretch()
 
         main_layout.addWidget(button_frame)
 
@@ -125,24 +127,111 @@ class MainWindow(QMainWindow):
         console_layout = QVBoxLayout()
 
         self.console_output = QTextEdit()
-        self.console_output.setReadOnly(True)  # Только для чтения
+        self.console_output.setReadOnly(True)
         self.console_output.setFont(QFont("Courier New", 10))
 
-        # Кнопка очистки консоли
+        # Кнопка очистки консоли с отдельным стилем
         clear_btn = QPushButton("Очистить консоль")
         clear_btn.clicked.connect(self.clear_console)
+        clear_btn.setStyleSheet(CONSOLE_BUTTON_STYLE)
 
         console_layout.addWidget(clear_btn)
         console_layout.addWidget(self.console_output)
         console_group.setLayout(console_layout)
 
-        main_layout.addWidget(console_group, 1)  # 1 = растягиваем
+        main_layout.addWidget(console_group, 1)
 
         # Применяем CSS-стили
         self.setStyleSheet(APP_STYLESHEET)
 
-        # Статус бар внизу окна
-        self.statusBar().showMessage("Готово")
+        # Применяем стиль для отключенных кнопок
+        self.create_btn.setStyleSheet(DISABLED_BUTTON_STYLE)
+        self.clean_btn.setStyleSheet(DISABLED_BUTTON_STYLE)
+        self.save_btn.setStyleSheet(DISABLED_BUTTON_STYLE)
+
+    def setup_status_bar(self):
+        """Настройка статус бара с отображением версии"""
+        status_bar = QStatusBar()
+        self.setStatusBar(status_bar)
+
+        # Левая часть: обычные сообщения
+        status_bar.showMessage("Готово")
+
+        # Правая часть: версия с иконкой и стилями
+        version_widget = self.create_version_widget()
+        status_bar.addPermanentWidget(version_widget)
+
+        # Обновляем сообщения статуса через таймер
+        self.status_timer = QTimer()
+        self.status_timer.timeout.connect(self.update_status_message)
+        self.status_timer.start(5000)
+
+    def create_version_widget(self):
+        """Создает виджет с информацией о версии"""
+        from version import get_version_string
+        try:
+            version_str = get_version_string()
+        except ImportError:
+            version_str = "v1.0.0"
+
+        # Создаем контейнер для версии
+        version_container = QWidget()
+        version_container.setStyleSheet(VERSION_WIDGET_STYLE)
+        layout = QHBoxLayout(version_container)
+        layout.setContentsMargins(10, 5, 10, 5)
+        layout.setSpacing(5)
+
+        # Иконка
+        icon_label = QLabel("⚡")
+        icon_label.setToolTip("Статус приложения")
+
+        # Текст версии
+        version_text = f"<b>{version_str}</b>"
+        version_label = QLabel(version_text)
+        version_label.setObjectName("versionLabel")
+
+        # Добавляем элементы
+        layout.addWidget(icon_label)
+        layout.addWidget(version_label)
+
+        # Tooltip с полной информацией
+        full_info = f"""<b>PSQL Mock Creator</b><br/>
+                    Версия: {version_str}<br/>
+                    <br/>
+                    Готов к работе."""
+        version_container.setToolTip(full_info)
+
+        return version_container
+
+    def update_status_message(self):
+        """Обновляет сообщение в статус баре"""
+        messages = [
+            "Готов к работе",
+            "Ожидание действий пользователя",
+            "Базы данных: 4 доступно",
+            f"Версия: {self.get_app_version()}",
+            f"Время: {datetime.now().strftime('%H:%M')}"
+        ]
+
+        current_message = self.statusBar().currentMessage()
+        if current_message:
+            try:
+                idx = messages.index(current_message)
+                next_idx = (idx + 1) % len(messages)
+            except ValueError:
+                next_idx = 0
+        else:
+            next_idx = 0
+
+        self.statusBar().showMessage(messages[next_idx], 3000)
+
+    def get_app_version(self):
+        """Возвращает версию приложения"""
+        try:
+            from version import get_version_string
+            return get_version_string()
+        except ImportError:
+            return "v1.0.0"
 
     def load_saved_config(self):
         """Загружает сохраненный конфиг в поля ввода."""
@@ -163,11 +252,7 @@ class MainWindow(QMainWindow):
 
     def get_selected_databases(self):
         """Возвращает список ID выбранных баз данных."""
-        selected = []
-        for db_id, checkbox in self.db_checkboxes.items():
-            if checkbox.isChecked():
-                selected.append(db_id)
-        return selected
+        return [db_id for db_id, checkbox in self.db_checkboxes.items() if checkbox.isChecked()]
 
     def save_current_config(self):
         """Сохраняет текущие настройки в файл."""
@@ -193,7 +278,6 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Внимание", "Выберите хотя бы одну базу данных!")
             return
 
-        # Запрашиваем подтверждение
         reply = QMessageBox.question(
             self, 'Подтверждение',
             f'Вы уверены, что хотите очистить {len(selected)} баз данных?\nЭто действие удалит все данные.',
@@ -206,14 +290,9 @@ class MainWindow(QMainWindow):
 
     def run_database_operation(self, operation, databases, config):
         """Запускает операцию с БД в отдельном потоке."""
-        # Блокируем кнопки на время выполнения
         self.set_buttons_enabled(False)
-
-        # Начинаем перехват print()
         self.logger.start_logging()
 
-        # Запускаем в отдельном потоке, чтобы UI не зависал
-        import threading
         def worker():
             try:
                 db_manager = DatabaseManager(config)
@@ -224,15 +303,12 @@ class MainWindow(QMainWindow):
             except Exception as e:
                 print(f"[ERROR] Ошибка: {e}")
             finally:
-                # Восстанавливаем stdout
                 self.logger.stop_logging()
-                # Разблокируем кнопки в основном потоке UI
                 self.set_buttons_enabled(True)
 
         thread = threading.Thread(target=worker, daemon=True)
         thread.start()
 
-        # Показываем сообщение о начале
         op_name = "создания" if operation == "create" else "очистки"
         self.log_to_console(f"\n{'=' * 60}\n")
         self.log_to_console(f"Запуск {op_name} баз данных: {', '.join(databases)}\n")
@@ -245,11 +321,21 @@ class MainWindow(QMainWindow):
         self.clean_btn.setEnabled(enabled)
         self.save_btn.setEnabled(enabled)
 
+        # Применяем/снимаем стиль для отключенных кнопок
+        if not enabled:
+            self.create_btn.setStyleSheet(DISABLED_BUTTON_STYLE)
+            self.clean_btn.setStyleSheet(DISABLED_BUTTON_STYLE)
+            self.save_btn.setStyleSheet(DISABLED_BUTTON_STYLE)
+        else:
+            self.create_btn.setStyleSheet("")
+            self.clean_btn.setStyleSheet("")
+            self.save_btn.setStyleSheet("")
+
     def setup_console_updater(self):
         """Настраивает таймер для обновления консоли."""
         self.console_timer = QTimer()
         self.console_timer.timeout.connect(self.update_console_display)
-        self.console_timer.start(100)  # Обновлять каждые 100 мс
+        self.console_timer.start(100)
 
     def update_console_display(self):
         """Берет накопленные логи из OutputLogger и выводит в QTextEdit."""
@@ -257,7 +343,6 @@ class MainWindow(QMainWindow):
         if logs:
             self.console_output.moveCursor(QTextCursor.MoveOperation.End)
             self.console_output.insertPlainText(logs)
-            # Автопрокрутка вниз
             self.console_output.ensureCursorVisible()
 
     def log_to_console(self, message):
