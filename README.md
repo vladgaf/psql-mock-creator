@@ -104,7 +104,6 @@ psql-mock-creator/
 │   └── postgres.json      # Настройки подключения к PostgreSQL
 ├── main.py                # Точка входа для GUI
 ├── cli.py                 # Точка входа для CLI
-├── config.py              # Прокси для обратной совместимости
 ├── requirements.txt       # Зависимости Python
 └── README.md             # Эта документация
 ```
