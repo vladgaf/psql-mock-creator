@@ -1,14 +1,12 @@
-import sys
 from datetime import datetime
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
     QGroupBox, QPushButton, QCheckBox, QTextEdit, QLabel,
-    QLineEdit, QMessageBox, QApplication, QFrame
+    QLineEdit, QMessageBox, QFrame
 )
-from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtCore import QTimer
 from PyQt6.QtGui import QFont, QTextCursor
 
-# Импортируем наши модули
 from core.config_manager import get_postgres_config, save_postgres_config
 from core.database_manager import DatabaseManager
 from core.logger import OutputLogger
