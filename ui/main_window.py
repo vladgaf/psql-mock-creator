@@ -9,7 +9,7 @@ from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont, QTextCursor
 
 # Импортируем наши модули
-from core.config_manager import load_config, save_config
+from core.config_manager import get_postgres_config, save_postgres_config
 from core.database_manager import DatabaseManager
 from core.logger import OutputLogger
 from ui.styles import APP_STYLESHEET
@@ -132,7 +132,7 @@ class MainWindow(QMainWindow):
 
     def load_saved_config(self):
         """Загружает сохраненный конфиг в поля ввода."""
-        config = load_config()
+        config = get_postgres_config()
         self.host_input.setText(config.get('host', 'localhost'))
         self.port_input.setText(str(config.get('port', 5432)))
         self.user_input.setText(config.get('user', 'postgres'))
@@ -158,7 +158,7 @@ class MainWindow(QMainWindow):
     def save_current_config(self):
         """Сохраняет текущие настройки в файл."""
         config = self.get_current_config()
-        save_config(config)
+        save_postgres_config(config)
         self.log_to_console("[INFO] Настройки сохранены в config/postgres.json\n")
         self.statusBar().showMessage("Настройки сохранены", 3000)
 

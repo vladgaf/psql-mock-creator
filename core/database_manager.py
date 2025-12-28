@@ -9,7 +9,7 @@ from peewee import PostgresqlDatabase
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-from config import MOCK_DATA_DIR, DATABASES_CONFIG
+from core.config_manager import MOCK_DATA_DIR, DATABASES_CONFIG
 
 
 class DatabaseManager:
