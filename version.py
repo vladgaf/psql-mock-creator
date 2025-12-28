@@ -5,7 +5,6 @@
 __version__ = "1.0.0"
 __version_info__ = (1, 0, 0)
 __build_date__ = "2025-12-28"
-__author__ = "https://github.com/vladgaf"
 __license__ = "MIT"
 
 # Короткое описание
