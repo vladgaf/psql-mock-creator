@@ -90,11 +90,12 @@ QCheckBox {
 QCheckBox::indicator {
     width: 18px;
     height: 18px;
+    border: 1px solid grey;
 }
 
 QCheckBox::indicator:checked {
     background-color: #4CAF50;
-    border: 2px solid #388E3C;
+    border: 1px solid #388E3C;
 }
 
 /* Статус бар */
