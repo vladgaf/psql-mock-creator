@@ -206,7 +206,7 @@ class MainWindow(QMainWindow):
                 if operation == "create":
                     db_manager.create_databases(databases)
                 else:
-                    db_manager.clean_databases()
+                    db_manager.clean_databases(databases)
             except Exception as e:
                 print(f"[ERROR] Ошибка: {e}")
             finally:

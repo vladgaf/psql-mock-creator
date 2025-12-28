@@ -51,11 +51,11 @@ POSTGRES_CONFIG = load_postgres_config()
 
 # Список баз данных для создания
 DATABASES_CONFIG = {
-    'video_games': {
+    'games_easy': {
         'db_name': 'games_easy',
         'description': 'База данных видеоигр (простая)',
-        'models_module': 'models.video_games',
-        'mock_data_folder': 'video_games'
+        'models_module': 'models.games_easy',
+        'mock_data_folder': 'games_easy'
     },
     'school_world': {
         'db_name': 'school_world',
