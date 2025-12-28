@@ -1,11 +1,12 @@
+import os
 from datetime import datetime
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
     QGroupBox, QPushButton, QCheckBox, QTextEdit, QLabel,
-    QLineEdit, QMessageBox, QFrame
+    QLineEdit, QMessageBox, QFrame, QApplication
 )
 from PyQt6.QtCore import QTimer
-from PyQt6.QtGui import QFont, QTextCursor
+from PyQt6.QtGui import QIcon, QFont, QTextCursor
 
 from core.config_manager import get_postgres_config, save_postgres_config
 from core.database_manager import DatabaseManager
@@ -17,9 +18,36 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.logger = OutputLogger()  # Наш перехватчик print()
+        self.setup_icon()
         self.setup_ui()
         self.load_saved_config()
         self.setup_console_updater()
+
+    def setup_icon(self):
+        """Устанавливает иконку приложения с поиском в нескольких местах"""
+        # Получаем абсолютный путь к корню проекта
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        icon_path = os.path.join(project_root, "resources", "icon.ico"),
+        print(icon_path[0])
+        icon_set = False
+        try:
+            # 1. Устанавливаем для всего приложения
+            app = QApplication.instance()
+            app.setWindowIcon(QIcon(icon_path[0]))
+
+            # 2. Устанавливаем для окна
+            self.setWindowIcon(QIcon(icon_path[0]))
+
+            # 3. Принудительно обновляем заголовок
+            current_title = self.windowTitle()
+            self.setWindowTitle("")  # Сброс
+            self.setWindowTitle(current_title)  # Установка обратно
+        except Exception as e:
+            print(f"⚠️ Не удалось загрузить иконку {icon_path}: {e}")
+
+        if not icon_set:
+            print("⚠️ Файл иконки не найден. Проверьте пути:")
+            print("   Иконка будет использована по умолчанию.")
 
     def setup_ui(self):
         """Создает все элементы интерфейса."""
@@ -78,29 +106,44 @@ class MainWindow(QMainWindow):
         db_group.setLayout(db_layout)
         main_layout.addWidget(db_group)
 
-        # ===== 3. СЕКЦИЯ: Кнопки управления =====
+        ## ===== 3. СЕКЦИЯ: Кнопки управления =====
         button_frame = QFrame()
         button_layout = QHBoxLayout(button_frame)
+        button_layout.setContentsMargins(0, 10, 0, 10)  # Отступы сверху и снизу
+
+        # Создаем контейнер для центрирования кнопок
+        button_container = QWidget()
+        button_container_layout = QHBoxLayout(button_container)
+        button_container_layout.setSpacing(15)  # Расстояние между кнопками
+        button_container_layout.setContentsMargins(0, 0, 0, 0)
 
         # Кнопка "Создать базы данных"
         self.create_btn = QPushButton("🗄️ Создать базы данных")
         self.create_btn.clicked.connect(self.create_databases)
-        self.create_btn.setObjectName("createButton")  # Для стилей CSS
+        self.create_btn.setObjectName("createButton")
+        self.create_btn.setMinimumWidth(150)  # Минимальная ширина для одинакового размера
 
         # Кнопка "Очистить базы данных"
         self.clean_btn = QPushButton("🧹 Очистить базы данных")
         self.clean_btn.clicked.connect(self.clean_databases)
         self.clean_btn.setObjectName("cleanButton")
+        self.clean_btn.setMinimumWidth(150)
 
         # Кнопка "Сохранить конфиг"
         self.save_btn = QPushButton("💾 Сохранить настройки")
         self.save_btn.clicked.connect(self.save_current_config)
         self.save_btn.setObjectName("saveButton")
+        self.save_btn.setMinimumWidth(150)
 
-        button_layout.addWidget(self.create_btn)
-        button_layout.addWidget(self.clean_btn)
-        button_layout.addWidget(self.save_btn)
-        button_layout.addStretch()
+        # Добавляем кнопки в контейнер
+        button_container_layout.addWidget(self.create_btn)
+        button_container_layout.addWidget(self.clean_btn)
+        button_container_layout.addWidget(self.save_btn)
+
+        # Центрируем контейнер с кнопками в основном layout
+        button_layout.addStretch()  # Растягиваемое пространство слева
+        button_layout.addWidget(button_container)  # Контейнер с кнопками по центру
+        button_layout.addStretch()  # Растягиваемое пространство справа
 
         main_layout.addWidget(button_frame)
 
