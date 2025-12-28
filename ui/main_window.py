@@ -17,37 +17,10 @@ from ui.styles import APP_STYLESHEET
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.logger = OutputLogger()  # Наш перехватчик print()
-        self.setup_icon()
+        self.logger = OutputLogger()
         self.setup_ui()
         self.load_saved_config()
         self.setup_console_updater()
-
-    def setup_icon(self):
-        """Устанавливает иконку приложения с поиском в нескольких местах"""
-        # Получаем абсолютный путь к корню проекта
-        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        icon_path = os.path.join(project_root, "resources", "icon.ico"),
-        print(icon_path[0])
-        icon_set = False
-        try:
-            # 1. Устанавливаем для всего приложения
-            app = QApplication.instance()
-            app.setWindowIcon(QIcon(icon_path[0]))
-
-            # 2. Устанавливаем для окна
-            self.setWindowIcon(QIcon(icon_path[0]))
-
-            # 3. Принудительно обновляем заголовок
-            current_title = self.windowTitle()
-            self.setWindowTitle("")  # Сброс
-            self.setWindowTitle(current_title)  # Установка обратно
-        except Exception as e:
-            print(f"⚠️ Не удалось загрузить иконку {icon_path}: {e}")
-
-        if not icon_set:
-            print("⚠️ Файл иконки не найден. Проверьте пути:")
-            print("   Иконка будет использована по умолчанию.")
 
     def setup_ui(self):
         """Создает все элементы интерфейса."""
