@@ -301,17 +301,9 @@ class MainWindow(QMainWindow):
         # 5. Вызываем явный flush для stdout
         sys.stdout.flush()
 
-        # 6. Закрываем все соединения с БД (если возможно)
-        try:
-            # Здесь можно добавить закрытие соединений DatabaseManager
-            pass
-        except:
-            pass
-
         print("Приложение корректно завершено.")
         super().closeEvent(event)
 
-    # Остальные методы остаются без изменений...
     def setup_status_bar(self):
         """Настройка статус бара с отображением версии и кнопкой темы"""
         status_bar = QStatusBar()
