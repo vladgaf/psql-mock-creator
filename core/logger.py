@@ -42,8 +42,14 @@ class QtOutputLogger(QObject):
 
     def write(self, message):
         """Перехватывает запись в stdout. Потокобезопасная версия."""
-        # Вывод в реальную консоль
-        self.original_stdout.write(message)
+        # Вывод в консоль, если она есть
+        if (self.original_stdout is not None and
+                hasattr(self.original_stdout, 'write') and
+                callable(self.original_stdout.write)):
+            try:
+                self.original_stdout.write(message)
+            except (AttributeError, OSError, IOError, ValueError):
+                pass
 
         # Сохранить в буфер
         self.log_buffer.write(message)
@@ -55,7 +61,13 @@ class QtOutputLogger(QObject):
 
     def flush(self):
         """Метод, требуемый для объекта, заменяющего stdout."""
-        self.original_stdout.flush()
+        if (self.original_stdout is not None and
+                hasattr(self.original_stdout, 'flush') and
+                callable(self.original_stdout.flush)):
+            try:
+                self.original_stdout.flush()
+            except (AttributeError, OSError, IOError, ValueError):
+                pass
 
     def get_logs(self):
         """Возвращает текущий вывод и очищает буфер."""
