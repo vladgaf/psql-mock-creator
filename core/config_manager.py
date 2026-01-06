@@ -18,18 +18,6 @@ def get_base_dir():
         # При разработке: на один уровень выше core/
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    # Отладочный лог
-    debug_log_path = os.path.join(os.path.dirname(sys.executable) if getattr(sys, 'frozen', False) else '.',
-                                  'config_manager_debug.log')
-    with open(debug_log_path, 'a', encoding='utf-8') as f:
-        f.write(f"[get_base_dir]\n")
-        f.write(f"  frozen: {getattr(sys, 'frozen', False)}\n")
-        f.write(f"  _MEIPASS: {getattr(sys, '_MEIPASS', 'NOT SET')}\n")
-        f.write(f"  sys.executable: {sys.executable}\n")
-        f.write(f"  __file__: {__file__}\n")
-        f.write(f"  base_dir: {base_dir}\n")
-        f.write(f"  exists: {os.path.exists(base_dir)}\n")
-
     return base_dir
 
 
