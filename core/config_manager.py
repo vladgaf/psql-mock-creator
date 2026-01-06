@@ -1,14 +1,76 @@
 import os
 import json
+import sys
 from peewee import PostgresqlDatabase
 
-# Базовые пути
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # На один уровень выше core/
+
+def get_base_dir():
+    """Получить базовую директорию, работающую в PyInstaller и при разработке"""
+    if getattr(sys, 'frozen', False):
+        # В PyInstaller: исполняемый файл в sys.executable
+        if hasattr(sys, '_MEIPASS'):
+            # Во время исполнения файлы во временной папке _MEIPASS
+            base_dir = sys._MEIPASS
+        else:
+            # Если нет _MEIPASS, берём директорию исполняемого файла
+            base_dir = os.path.dirname(sys.executable)
+    else:
+        # При разработке: на один уровень выше core/
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    # Отладочный лог
+    debug_log_path = os.path.join(os.path.dirname(sys.executable) if getattr(sys, 'frozen', False) else '.',
+                                  'config_manager_debug.log')
+    with open(debug_log_path, 'a', encoding='utf-8') as f:
+        f.write(f"[get_base_dir]\n")
+        f.write(f"  frozen: {getattr(sys, 'frozen', False)}\n")
+        f.write(f"  _MEIPASS: {getattr(sys, '_MEIPASS', 'NOT SET')}\n")
+        f.write(f"  sys.executable: {sys.executable}\n")
+        f.write(f"  __file__: {__file__}\n")
+        f.write(f"  base_dir: {base_dir}\n")
+        f.write(f"  exists: {os.path.exists(base_dir)}\n")
+
+    return base_dir
+
+
+# Используем новую функцию
+BASE_DIR = get_base_dir()
 
 CONFIG_DIR = os.path.join(BASE_DIR, 'config')
 MODELS_DIR = os.path.join(BASE_DIR, 'models')
 MOCK_DATA_DIR = os.path.join(BASE_DIR, 'mock_data')
 POSTGRES_CONFIG_PATH = os.path.join(CONFIG_DIR, 'postgres.json')
+
+# Добавим отладочный вывод путей
+debug_log_path = os.path.join(os.path.dirname(sys.executable) if getattr(sys, 'frozen', False) else '.',
+                              'config_manager_paths.log')
+with open(debug_log_path, 'w', encoding='utf-8') as f:
+    f.write(f"=== CONFIG MANAGER PATHS ===\n")
+    f.write(f"BASE_DIR: {BASE_DIR}\n")
+    f.write(f"CONFIG_DIR: {CONFIG_DIR}\n")
+    f.write(f"MODELS_DIR: {MODELS_DIR}\n")
+    f.write(f"MOCK_DATA_DIR: {MOCK_DATA_DIR}\n")
+    f.write(f"POSTGRES_CONFIG_PATH: {POSTGRES_CONFIG_PATH}\n\n")
+
+    # Проверяем существование
+    f.write(f"=== EXISTENCE CHECK ===\n")
+    f.write(f"BASE_DIR exists: {os.path.exists(BASE_DIR)}\n")
+    f.write(f"CONFIG_DIR exists: {os.path.exists(CONFIG_DIR)}\n")
+    f.write(f"MODELS_DIR exists: {os.path.exists(MODELS_DIR)}\n")
+    f.write(f"MOCK_DATA_DIR exists: {os.path.exists(MOCK_DATA_DIR)}\n")
+    f.write(f"POSTGRES_CONFIG_PATH exists: {os.path.exists(POSTGRES_CONFIG_PATH)}\n\n")
+
+    # Если MOCK_DATA_DIR существует, покажем содержимое
+    if os.path.exists(MOCK_DATA_DIR):
+        f.write(f"=== MOCK_DATA CONTENTS ===\n")
+        for item in os.listdir(MOCK_DATA_DIR):
+            item_path = os.path.join(MOCK_DATA_DIR, item)
+            f.write(f"{item}: {'dir' if os.path.isdir(item_path) else 'file'}\n")
+            if os.path.isdir(item_path):
+                json_files = [f for f in os.listdir(item_path) if f.endswith('.json')]
+                f.write(f"  JSON files: {len(json_files)}\n")
+                for json_file in json_files[:5]:  # Первые 5 файлов
+                    f.write(f"    {json_file}\n")
 
 # Глобальная переменная для хранения конфигурации
 _POSTGRES_CONFIG = None
