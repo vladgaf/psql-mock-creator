@@ -5,14 +5,14 @@ import sys
 import traceback
 
 from PyQt6.QtCore import QTimer, QSettings, QObject, pyqtSignal, pyqtSlot
-from PyQt6.QtGui import QFont, QTextCursor
+from PyQt6.QtGui import QFont, QTextCursor, QIcon
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
     QGroupBox, QPushButton, QCheckBox, QTextEdit, QLabel,
     QLineEdit, QMessageBox, QFrame, QStatusBar
 )
 
-from core.config_manager import get_postgres_config, save_postgres_config
+from core.config_manager import get_postgres_config, save_postgres_config, RESOURCES_DIR
 from core.database_manager import DatabaseManager
 from core.logger import QtOutputLogger
 from ui.styles import (
@@ -34,6 +34,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.setWindowIcon(self.get_app_icon())
+
         # Для отслеживания активных потоков
         self.active_workers = []
 
@@ -53,6 +55,21 @@ class MainWindow(QMainWindow):
         # Применяем сохраненную тему
         self.apply_theme(self.current_theme)
 
+    def get_app_icon(self):
+        possible_paths = [
+            os.path.join(RESOURCES_DIR, 'icon.ico'),
+            os.path.join(RESOURCES_DIR, 'icon.png')
+        ]
+
+        for path in possible_paths:
+            try:
+                if os.path.exists(path):
+                    return QIcon(path)
+            except:
+                continue
+
+        # Возвращаем стандартную иконку Qt если ничего не найдено
+        return QIcon.fromTheme("application-x-executable")
     def setup_ui(self):
         """Создает все элементы интерфейса."""
         self.setWindowTitle("PSQL Mock Creator")

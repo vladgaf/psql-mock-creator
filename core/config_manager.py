@@ -21,12 +21,12 @@ def get_base_dir():
     return base_dir
 
 
-# Используем новую функцию
 BASE_DIR = get_base_dir()
 
 CONFIG_DIR = os.path.join(BASE_DIR, 'config')
 MODELS_DIR = os.path.join(BASE_DIR, 'models')
 MOCK_DATA_DIR = os.path.join(BASE_DIR, 'mock_data')
+RESOURCES_DIR = os.path.join(BASE_DIR, 'resources')
 POSTGRES_CONFIG_PATH = os.path.join(CONFIG_DIR, 'postgres.json')
 
 # Глобальная переменная для хранения конфигурации
