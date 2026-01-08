@@ -55,7 +55,8 @@ class MainWindow(QMainWindow):
         # Применяем сохраненную тему
         self.apply_theme(self.current_theme)
 
-    def get_app_icon(self):
+    @staticmethod
+    def get_app_icon():
         possible_paths = [
             os.path.join(RESOURCES_DIR, 'icon.ico'),
             os.path.join(RESOURCES_DIR, 'icon.png')
