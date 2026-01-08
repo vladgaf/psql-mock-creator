@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QApplication
 
 from ui.main_window import MainWindow
 
+
 def main():
     # Создаем приложение PyQt
     app = QApplication(sys.argv)

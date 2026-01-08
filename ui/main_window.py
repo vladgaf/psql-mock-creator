@@ -71,6 +71,7 @@ class MainWindow(QMainWindow):
 
         # Возвращаем стандартную иконку Qt если ничего не найдено
         return QIcon.fromTheme("application-x-executable")
+
     def setup_ui(self):
         """Создает все элементы интерфейса."""
         self.setWindowTitle("PSQL Mock Creator")
