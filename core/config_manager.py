@@ -1,6 +1,7 @@
-import os
 import json
+import os
 import sys
+
 from peewee import PostgresqlDatabase
 
 

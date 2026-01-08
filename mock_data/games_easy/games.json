@@ -1,443 +1,443 @@
 [
-    {
-        "title": "Minecraft",
-        "genre": "Песочница",
-        "platform": "PC",
-        "release_year": 2011,
-        "rating": 9.0,
-        "developer": "Mojang",
-        "price": 1299
-    },
-    {
-        "title": "Roblox",
-        "genre": "Песочница",
-        "platform": "PC",
-        "release_year": 2006,
-        "rating": 8.5,
-        "developer": "Roblox Corporation",
-        "price": 0
-    },
-    {
-        "title": "Fortnite",
-        "genre": "Шутер",
-        "platform": "PC",
-        "release_year": 2017,
-        "rating": 8.8,
-        "developer": "Epic Games",
-        "price": 0
-    },
-    {
-        "title": "The Legend of Zelda: Breath of the Wild",
-        "genre": "Приключение",
-        "platform": "Nintendo Switch",
-        "release_year": 2017,
-        "rating": 9.7,
-        "developer": "Nintendo",
-        "price": 3999
-    },
-    {
-        "title": "Mario Kart 8 Deluxe",
-        "genre": "Гонки",
-        "platform": "Nintendo Switch",
-        "release_year": 2017,
-        "rating": 9.2,
-        "developer": "Nintendo",
-        "price": 3599
-    },
-    {
-        "title": "Among Us",
-        "genre": "Социальная",
-        "platform": "Mobile",
-        "release_year": 2018,
-        "rating": 8.2,
-        "developer": "InnerSloth",
-        "price": 0
-    },
-    {
-        "title": "FIFA 24",
-        "genre": "Спорт",
-        "platform": "PlayStation",
-        "release_year": 2023,
-        "rating": 7.8,
-        "developer": "EA Sports",
-        "price": 4999
-    },
-    {
-        "title": "Cyberpunk 2077",
-        "genre": "RPG",
-        "platform": "PC",
-        "release_year": 2020,
-        "rating": 8.9,
-        "developer": "CD Projekt Red",
-        "price": 2999
-    },
-    {
-        "title": "The Witcher 3: Wild Hunt",
-        "genre": "RPG",
-        "platform": "PC",
-        "release_year": 2015,
-        "rating": 9.8,
-        "developer": "CD Projekt Red",
-        "price": 1999
-    },
-    {
-        "title": "Grand Theft Auto V",
-        "genre": "Экшен",
-        "platform": "PlayStation",
-        "release_year": 2013,
-        "rating": 9.5,
-        "developer": "Rockstar North",
-        "price": 2499
-    },
-    {
-        "title": "Red Dead Redemption 2",
-        "genre": "Приключение",
-        "platform": "PlayStation",
-        "release_year": 2018,
-        "rating": 9.6,
-        "developer": "Rockstar Studios",
-        "price": 3499
-    },
-    {
-        "title": "Counter-Strike 2",
-        "genre": "Шутер",
-        "platform": "PC",
-        "release_year": 2023,
-        "rating": 9.0,
-        "developer": "Valve",
-        "price": 0
-    },
-    {
-        "title": "Valorant",
-        "genre": "Шутер",
-        "platform": "PC",
-        "release_year": 2020,
-        "rating": 8.5,
-        "developer": "Riot Games",
-        "price": 0
-    },
-    {
-        "title": "Overwatch 2",
-        "genre": "Шутер",
-        "platform": "PC",
-        "release_year": 2022,
-        "rating": 7.5,
-        "developer": "Blizzard Entertainment",
-        "price": 0
-    },
-    {
-        "title": "Call of Duty: Warzone",
-        "genre": "Шутер",
-        "platform": "PC",
-        "release_year": 2020,
-        "rating": 8.0,
-        "developer": "Infinity Ward",
-        "price": 0
-    },
-    {
-        "title": "Apex Legends",
-        "genre": "Шутер",
-        "platform": "PlayStation",
-        "release_year": 2019,
-        "rating": 8.7,
-        "developer": "Respawn Entertainment",
-        "price": 0
-    },
-    {
-        "title": "God of War: Ragnarök",
-        "genre": "Экшен",
-        "platform": "PlayStation",
-        "release_year": 2022,
-        "rating": 9.4,
-        "developer": "Santa Monica Studio",
-        "price": 5499
-    },
-    {
-        "title": "The Last of Us Part II",
-        "genre": "Приключение",
-        "platform": "PlayStation",
-        "release_year": 2020,
-        "rating": 9.2,
-        "developer": "Naughty Dog",
-        "price": 4299
-    },
-    {
-        "title": "Animal Crossing: New Horizons",
-        "genre": "Симулятор",
-        "platform": "Nintendo Switch",
-        "release_year": 2020,
-        "rating": 8.8,
-        "developer": "Nintendo",
-        "price": 3999
-    },
-    {
-        "title": "Super Mario Odyssey",
-        "genre": "Платформер",
-        "platform": "Nintendo Switch",
-        "release_year": 2017,
-        "rating": 9.6,
-        "developer": "Nintendo",
-        "price": 3799
-    },
-    {
-        "title": "Hades",
-        "genre": "Roguelike",
-        "platform": "PC",
-        "release_year": 2020,
-        "rating": 9.4,
-        "developer": "Supergiant Games",
-        "price": 1299
-    },
-    {
-        "title": "Stardew Valley",
-        "genre": "Симулятор",
-        "platform": "PC",
-        "release_year": 2016,
-        "rating": 9.3,
-        "developer": "ConcernedApe",
-        "price": 799
-    },
-    {
-        "title": "Elden Ring",
-        "genre": "RPG",
-        "platform": "PC",
-        "release_year": 2022,
-        "rating": 9.5,
-        "developer": "FromSoftware",
-        "price": 3999
-    },
-    {
-        "title": "Baldur's Gate 3",
-        "genre": "RPG",
-        "platform": "PC",
-        "release_year": 2023,
-        "rating": 9.6,
-        "developer": "Larian Studios",
-        "price": 4599
-    },
-    {
-        "title": "Starfield",
-        "genre": "RPG",
-        "platform": "Xbox",
-        "release_year": 2023,
-        "rating": 8.2,
-        "developer": "Bethesda Game Studios",
-        "price": 4999
-    },
-    {
-        "title": "Forza Horizon 5",
-        "genre": "Гонки",
-        "platform": "Xbox",
-        "release_year": 2021,
-        "rating": 9.2,
-        "developer": "Playground Games",
-        "price": 3799
-    },
-    {
-        "title": "Rocket League",
-        "genre": "Спорт",
-        "platform": "PlayStation",
-        "release_year": 2015,
-        "rating": 8.6,
-        "developer": "Psyonix",
-        "price": 0
-    },
-    {
-        "title": "Fall Guys",
-        "genre": "Батл-рояль",
-        "platform": "PC",
-        "release_year": 2020,
-        "rating": 8.0,
-        "developer": "Mediatonic",
-        "price": 0
-    },
-    {
-        "title": "Genshin Impact",
-        "genre": "RPG",
-        "platform": "Mobile",
-        "release_year": 2020,
-        "rating": 8.8,
-        "developer": "miHoYo",
-        "price": 0
-    },
-    {
-        "title": "Pokémon GO",
-        "genre": "Приключение",
-        "platform": "Mobile",
-        "release_year": 2016,
-        "rating": 8.1,
-        "developer": "Niantic",
-        "price": 0
-    },
-    {
-        "title": "Candy Crush Saga",
-        "genre": "Головоломка",
-        "platform": "Mobile",
-        "release_year": 2012,
-        "rating": 7.5,
-        "developer": "King",
-        "price": 0
-    },
-    {
-        "title": "Subnautica",
-        "genre": "Приключение",
-        "platform": "PC",
-        "release_year": 2018,
-        "rating": 9.1,
-        "developer": "Unknown Worlds Entertainment",
-        "price": 1499
-    },
-    {
-        "title": "Terraria",
-        "genre": "Песочница",
-        "platform": "PC",
-        "release_year": 2011,
-        "rating": 9.2,
-        "developer": "Re-Logic",
-        "price": 499
-    },
-    {
-        "title": "It Takes Two",
-        "genre": "Приключение",
-        "platform": "PlayStation",
-        "release_year": 2021,
-        "rating": 9.3,
-        "developer": "Hazelight Studios",
-        "price": 2799
-    },
-    {
-        "title": "Hollow Knight",
-        "genre": "Метроидвания",
-        "platform": "PC",
-        "release_year": 2017,
-        "rating": 9.4,
-        "developer": "Team Cherry",
-        "price": 699
-    },
-    {
-        "title": "Celeste",
-        "genre": "Платформер",
-        "platform": "PC",
-        "release_year": 2018,
-        "rating": 9.3,
-        "developer": "Maddy Makes Games",
-        "price": 599
-    },
-    {
-        "title": "Dead Cells",
-        "genre": "Roguelike",
-        "platform": "Nintendo Switch",
-        "release_year": 2018,
-        "rating": 9.0,
-        "developer": "Motion Twin",
-        "price": 1299
-    },
-    {
-        "title": "Sekiro: Shadows Die Twice",
-        "genre": "Экшен",
-        "platform": "PC",
-        "release_year": 2019,
-        "rating": 9.2,
-        "developer": "FromSoftware",
-        "price": 3499
-    },
-    {
-        "title": "Resident Evil 4 Remake",
-        "genre": "Хоррор",
-        "platform": "PlayStation",
-        "release_year": 2023,
-        "rating": 9.3,
-        "developer": "Capcom",
-        "price": 4299
-    },
-    {
-        "title": "The Sims 4",
-        "genre": "Симулятор",
-        "platform": "PC",
-        "release_year": 2014,
-        "rating": 8.0,
-        "developer": "Maxis",
-        "price": 0
-    },
-    {
-        "title": "Cities: Skylines",
-        "genre": "Симулятор",
-        "platform": "PC",
-        "release_year": 2015,
-        "rating": 8.8,
-        "developer": "Colossal Order",
-        "price": 899
-    },
-    {
-        "title": "Factorio",
-        "genre": "Стратегия",
-        "platform": "PC",
-        "release_year": 2020,
-        "rating": 9.6,
-        "developer": "Wube Software",
-        "price": 1199
-    },
-    {
-        "title": "Civilization VI",
-        "genre": "Стратегия",
-        "platform": "PC",
-        "release_year": 2016,
-        "rating": 9.0,
-        "developer": "Firaxis Games",
-        "price": 1799
-    },
-    {
-        "title": "XCOM 2",
-        "genre": "Стратегия",
-        "platform": "PC",
-        "release_year": 2016,
-        "rating": 9.1,
-        "developer": "Firaxis Games",
-        "price": 1499
-    },
-    {
-        "title": "Doom Eternal",
-        "genre": "Шутер",
-        "platform": "PC",
-        "release_year": 2020,
-        "rating": 9.0,
-        "developer": "id Software",
-        "price": 2999
-    },
-    {
-        "title": "Half-Life: Alyx",
-        "genre": "Шутер",
-        "platform": "PC",
-        "release_year": 2020,
-        "rating": 9.5,
-        "developer": "Valve",
-        "price": 1999
-    },
-    {
-        "title": "Microsoft Flight Simulator",
-        "genre": "Симулятор",
-        "platform": "PC",
-        "release_year": 2020,
-        "rating": 9.0,
-        "developer": "Asobo Studio",
-        "price": 4999
-    },
-    {
-        "title": "Street Fighter 6",
-        "genre": "Файтинг",
-        "platform": "PlayStation",
-        "release_year": 2023,
-        "rating": 9.2,
-        "developer": "Capcom",
-        "price": 4699
-    },
-    {
-        "title": "Tetris Effect: Connected",
-        "genre": "Головоломка",
-        "platform": "Xbox",
-        "release_year": 2020,
-        "rating": 9.1,
-        "developer": "Monstars Inc.",
-        "price": 1799
-    }
+  {
+    "title": "Minecraft",
+    "genre": "Песочница",
+    "platform": "PC",
+    "release_year": 2011,
+    "rating": 9.0,
+    "developer": "Mojang",
+    "price": 1299
+  },
+  {
+    "title": "Roblox",
+    "genre": "Песочница",
+    "platform": "PC",
+    "release_year": 2006,
+    "rating": 8.5,
+    "developer": "Roblox Corporation",
+    "price": 0
+  },
+  {
+    "title": "Fortnite",
+    "genre": "Шутер",
+    "platform": "PC",
+    "release_year": 2017,
+    "rating": 8.8,
+    "developer": "Epic Games",
+    "price": 0
+  },
+  {
+    "title": "The Legend of Zelda: Breath of the Wild",
+    "genre": "Приключение",
+    "platform": "Nintendo Switch",
+    "release_year": 2017,
+    "rating": 9.7,
+    "developer": "Nintendo",
+    "price": 3999
+  },
+  {
+    "title": "Mario Kart 8 Deluxe",
+    "genre": "Гонки",
+    "platform": "Nintendo Switch",
+    "release_year": 2017,
+    "rating": 9.2,
+    "developer": "Nintendo",
+    "price": 3599
+  },
+  {
+    "title": "Among Us",
+    "genre": "Социальная",
+    "platform": "Mobile",
+    "release_year": 2018,
+    "rating": 8.2,
+    "developer": "InnerSloth",
+    "price": 0
+  },
+  {
+    "title": "FIFA 24",
+    "genre": "Спорт",
+    "platform": "PlayStation",
+    "release_year": 2023,
+    "rating": 7.8,
+    "developer": "EA Sports",
+    "price": 4999
+  },
+  {
+    "title": "Cyberpunk 2077",
+    "genre": "RPG",
+    "platform": "PC",
+    "release_year": 2020,
+    "rating": 8.9,
+    "developer": "CD Projekt Red",
+    "price": 2999
+  },
+  {
+    "title": "The Witcher 3: Wild Hunt",
+    "genre": "RPG",
+    "platform": "PC",
+    "release_year": 2015,
+    "rating": 9.8,
+    "developer": "CD Projekt Red",
+    "price": 1999
+  },
+  {
+    "title": "Grand Theft Auto V",
+    "genre": "Экшен",
+    "platform": "PlayStation",
+    "release_year": 2013,
+    "rating": 9.5,
+    "developer": "Rockstar North",
+    "price": 2499
+  },
+  {
+    "title": "Red Dead Redemption 2",
+    "genre": "Приключение",
+    "platform": "PlayStation",
+    "release_year": 2018,
+    "rating": 9.6,
+    "developer": "Rockstar Studios",
+    "price": 3499
+  },
+  {
+    "title": "Counter-Strike 2",
+    "genre": "Шутер",
+    "platform": "PC",
+    "release_year": 2023,
+    "rating": 9.0,
+    "developer": "Valve",
+    "price": 0
+  },
+  {
+    "title": "Valorant",
+    "genre": "Шутер",
+    "platform": "PC",
+    "release_year": 2020,
+    "rating": 8.5,
+    "developer": "Riot Games",
+    "price": 0
+  },
+  {
+    "title": "Overwatch 2",
+    "genre": "Шутер",
+    "platform": "PC",
+    "release_year": 2022,
+    "rating": 7.5,
+    "developer": "Blizzard Entertainment",
+    "price": 0
+  },
+  {
+    "title": "Call of Duty: Warzone",
+    "genre": "Шутер",
+    "platform": "PC",
+    "release_year": 2020,
+    "rating": 8.0,
+    "developer": "Infinity Ward",
+    "price": 0
+  },
+  {
+    "title": "Apex Legends",
+    "genre": "Шутер",
+    "platform": "PlayStation",
+    "release_year": 2019,
+    "rating": 8.7,
+    "developer": "Respawn Entertainment",
+    "price": 0
+  },
+  {
+    "title": "God of War: Ragnarök",
+    "genre": "Экшен",
+    "platform": "PlayStation",
+    "release_year": 2022,
+    "rating": 9.4,
+    "developer": "Santa Monica Studio",
+    "price": 5499
+  },
+  {
+    "title": "The Last of Us Part II",
+    "genre": "Приключение",
+    "platform": "PlayStation",
+    "release_year": 2020,
+    "rating": 9.2,
+    "developer": "Naughty Dog",
+    "price": 4299
+  },
+  {
+    "title": "Animal Crossing: New Horizons",
+    "genre": "Симулятор",
+    "platform": "Nintendo Switch",
+    "release_year": 2020,
+    "rating": 8.8,
+    "developer": "Nintendo",
+    "price": 3999
+  },
+  {
+    "title": "Super Mario Odyssey",
+    "genre": "Платформер",
+    "platform": "Nintendo Switch",
+    "release_year": 2017,
+    "rating": 9.6,
+    "developer": "Nintendo",
+    "price": 3799
+  },
+  {
+    "title": "Hades",
+    "genre": "Roguelike",
+    "platform": "PC",
+    "release_year": 2020,
+    "rating": 9.4,
+    "developer": "Supergiant Games",
+    "price": 1299
+  },
+  {
+    "title": "Stardew Valley",
+    "genre": "Симулятор",
+    "platform": "PC",
+    "release_year": 2016,
+    "rating": 9.3,
+    "developer": "ConcernedApe",
+    "price": 799
+  },
+  {
+    "title": "Elden Ring",
+    "genre": "RPG",
+    "platform": "PC",
+    "release_year": 2022,
+    "rating": 9.5,
+    "developer": "FromSoftware",
+    "price": 3999
+  },
+  {
+    "title": "Baldur's Gate 3",
+    "genre": "RPG",
+    "platform": "PC",
+    "release_year": 2023,
+    "rating": 9.6,
+    "developer": "Larian Studios",
+    "price": 4599
+  },
+  {
+    "title": "Starfield",
+    "genre": "RPG",
+    "platform": "Xbox",
+    "release_year": 2023,
+    "rating": 8.2,
+    "developer": "Bethesda Game Studios",
+    "price": 4999
+  },
+  {
+    "title": "Forza Horizon 5",
+    "genre": "Гонки",
+    "platform": "Xbox",
+    "release_year": 2021,
+    "rating": 9.2,
+    "developer": "Playground Games",
+    "price": 3799
+  },
+  {
+    "title": "Rocket League",
+    "genre": "Спорт",
+    "platform": "PlayStation",
+    "release_year": 2015,
+    "rating": 8.6,
+    "developer": "Psyonix",
+    "price": 0
+  },
+  {
+    "title": "Fall Guys",
+    "genre": "Батл-рояль",
+    "platform": "PC",
+    "release_year": 2020,
+    "rating": 8.0,
+    "developer": "Mediatonic",
+    "price": 0
+  },
+  {
+    "title": "Genshin Impact",
+    "genre": "RPG",
+    "platform": "Mobile",
+    "release_year": 2020,
+    "rating": 8.8,
+    "developer": "miHoYo",
+    "price": 0
+  },
+  {
+    "title": "Pokémon GO",
+    "genre": "Приключение",
+    "platform": "Mobile",
+    "release_year": 2016,
+    "rating": 8.1,
+    "developer": "Niantic",
+    "price": 0
+  },
+  {
+    "title": "Candy Crush Saga",
+    "genre": "Головоломка",
+    "platform": "Mobile",
+    "release_year": 2012,
+    "rating": 7.5,
+    "developer": "King",
+    "price": 0
+  },
+  {
+    "title": "Subnautica",
+    "genre": "Приключение",
+    "platform": "PC",
+    "release_year": 2018,
+    "rating": 9.1,
+    "developer": "Unknown Worlds Entertainment",
+    "price": 1499
+  },
+  {
+    "title": "Terraria",
+    "genre": "Песочница",
+    "platform": "PC",
+    "release_year": 2011,
+    "rating": 9.2,
+    "developer": "Re-Logic",
+    "price": 499
+  },
+  {
+    "title": "It Takes Two",
+    "genre": "Приключение",
+    "platform": "PlayStation",
+    "release_year": 2021,
+    "rating": 9.3,
+    "developer": "Hazelight Studios",
+    "price": 2799
+  },
+  {
+    "title": "Hollow Knight",
+    "genre": "Метроидвания",
+    "platform": "PC",
+    "release_year": 2017,
+    "rating": 9.4,
+    "developer": "Team Cherry",
+    "price": 699
+  },
+  {
+    "title": "Celeste",
+    "genre": "Платформер",
+    "platform": "PC",
+    "release_year": 2018,
+    "rating": 9.3,
+    "developer": "Maddy Makes Games",
+    "price": 599
+  },
+  {
+    "title": "Dead Cells",
+    "genre": "Roguelike",
+    "platform": "Nintendo Switch",
+    "release_year": 2018,
+    "rating": 9.0,
+    "developer": "Motion Twin",
+    "price": 1299
+  },
+  {
+    "title": "Sekiro: Shadows Die Twice",
+    "genre": "Экшен",
+    "platform": "PC",
+    "release_year": 2019,
+    "rating": 9.2,
+    "developer": "FromSoftware",
+    "price": 3499
+  },
+  {
+    "title": "Resident Evil 4 Remake",
+    "genre": "Хоррор",
+    "platform": "PlayStation",
+    "release_year": 2023,
+    "rating": 9.3,
+    "developer": "Capcom",
+    "price": 4299
+  },
+  {
+    "title": "The Sims 4",
+    "genre": "Симулятор",
+    "platform": "PC",
+    "release_year": 2014,
+    "rating": 8.0,
+    "developer": "Maxis",
+    "price": 0
+  },
+  {
+    "title": "Cities: Skylines",
+    "genre": "Симулятор",
+    "platform": "PC",
+    "release_year": 2015,
+    "rating": 8.8,
+    "developer": "Colossal Order",
+    "price": 899
+  },
+  {
+    "title": "Factorio",
+    "genre": "Стратегия",
+    "platform": "PC",
+    "release_year": 2020,
+    "rating": 9.6,
+    "developer": "Wube Software",
+    "price": 1199
+  },
+  {
+    "title": "Civilization VI",
+    "genre": "Стратегия",
+    "platform": "PC",
+    "release_year": 2016,
+    "rating": 9.0,
+    "developer": "Firaxis Games",
+    "price": 1799
+  },
+  {
+    "title": "XCOM 2",
+    "genre": "Стратегия",
+    "platform": "PC",
+    "release_year": 2016,
+    "rating": 9.1,
+    "developer": "Firaxis Games",
+    "price": 1499
+  },
+  {
+    "title": "Doom Eternal",
+    "genre": "Шутер",
+    "platform": "PC",
+    "release_year": 2020,
+    "rating": 9.0,
+    "developer": "id Software",
+    "price": 2999
+  },
+  {
+    "title": "Half-Life: Alyx",
+    "genre": "Шутер",
+    "platform": "PC",
+    "release_year": 2020,
+    "rating": 9.5,
+    "developer": "Valve",
+    "price": 1999
+  },
+  {
+    "title": "Microsoft Flight Simulator",
+    "genre": "Симулятор",
+    "platform": "PC",
+    "release_year": 2020,
+    "rating": 9.0,
+    "developer": "Asobo Studio",
+    "price": 4999
+  },
+  {
+    "title": "Street Fighter 6",
+    "genre": "Файтинг",
+    "platform": "PlayStation",
+    "release_year": 2023,
+    "rating": 9.2,
+    "developer": "Capcom",
+    "price": 4699
+  },
+  {
+    "title": "Tetris Effect: Connected",
+    "genre": "Головоломка",
+    "platform": "Xbox",
+    "release_year": 2020,
+    "rating": 9.1,
+    "developer": "Monstars Inc.",
+    "price": 1799
+  }
 ]

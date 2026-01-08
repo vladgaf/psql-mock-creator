@@ -1,5 +1,6 @@
 import sys
 from io import StringIO
+
 from PyQt6.QtCore import QObject, pyqtSignal, pyqtSlot
 
 

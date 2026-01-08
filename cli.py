@@ -4,8 +4,9 @@
 """
 
 import argparse
-from core.database_manager import DatabaseManager
+
 from core.config_manager import get_postgres_config, DATABASES_CONFIG, show_postgres_config
+from core.database_manager import DatabaseManager
 
 
 def main():
