@@ -1,13 +1,32 @@
 import os
 import json
+import sys
 from peewee import PostgresqlDatabase
 
-# Базовые пути
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # На один уровень выше core/
+
+def get_base_dir():
+    """Получить базовую директорию, работающую в PyInstaller и при разработке"""
+    if getattr(sys, 'frozen', False):
+        # В PyInstaller: исполняемый файл в sys.executable
+        if hasattr(sys, '_MEIPASS'):
+            # Во время исполнения файлы во временной папке _MEIPASS
+            base_dir = sys._MEIPASS
+        else:
+            # Если нет _MEIPASS, берём директорию исполняемого файла
+            base_dir = os.path.dirname(sys.executable)
+    else:
+        # При разработке: на один уровень выше core/
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    return base_dir
+
+
+BASE_DIR = get_base_dir()
 
 CONFIG_DIR = os.path.join(BASE_DIR, 'config')
 MODELS_DIR = os.path.join(BASE_DIR, 'models')
 MOCK_DATA_DIR = os.path.join(BASE_DIR, 'mock_data')
+RESOURCES_DIR = os.path.join(BASE_DIR, 'resources')
 POSTGRES_CONFIG_PATH = os.path.join(CONFIG_DIR, 'postgres.json')
 
 # Глобальная переменная для хранения конфигурации

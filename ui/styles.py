@@ -52,16 +52,18 @@ QLineEdit:focus, QSpinBox:focus {
 
 /* Кнопки */
 QPushButton {
+    background-color: rgba(108, 117, 125, 0.1);
+    border: 1px solid rgba(108, 117, 125, 0.2);
+    color: #121212;
     padding: 10px 20px;
     border-radius: 5px;
     font-weight: bold;
     font-size: 13px;
-    border: none;
     min-width: 100px;
 }
 
 QPushButton:hover {
-    opacity: 0.9;
+    background-color: rgba(108, 117, 125, 0.2);
 }
 
 QPushButton#createButton {
