@@ -1,11 +1,11 @@
+import importlib
 import json
 import os
-import importlib
 import traceback
 from datetime import datetime
 
-from peewee import PostgresqlDatabase
 import psycopg2
+from peewee import PostgresqlDatabase
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 from core.config_manager import MOCK_DATA_DIR, DATABASES_CONFIG
@@ -200,7 +200,6 @@ class DatabaseManager:
         except Exception as e:
             print(f"❌ Ошибка при создании таблиц: {e}")
             return False
-
 
     @staticmethod
     def _drop_all_views(database):

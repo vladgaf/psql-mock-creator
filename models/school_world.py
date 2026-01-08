@@ -1,4 +1,5 @@
 from peewee import *
+
 from core.config_manager import create_database_connection
 
 # Создаем подключение к базе данных

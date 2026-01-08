@@ -3,6 +3,7 @@ import sys
 from PyQt6.QtWidgets import QApplication
 
 from ui.main_window import MainWindow
+from ui.utils import get_app_icon
 
 
 def main():
@@ -13,7 +14,7 @@ def main():
     window = MainWindow()
 
     app.setApplicationName("PSQL Mock Creator")
-    app.setWindowIcon(window.get_app_icon())
+    app.setWindowIcon(get_app_icon())
 
     window.show()
 

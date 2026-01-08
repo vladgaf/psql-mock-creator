@@ -1,33 +1,24 @@
-from datetime import datetime
 import os
-import threading
 import sys
-import traceback
+from datetime import datetime
 
-from PyQt6.QtCore import QTimer, QSettings, QObject, pyqtSignal, pyqtSlot
-from PyQt6.QtGui import QFont, QTextCursor, QIcon
+from PyQt6.QtCore import QTimer, QSettings
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
-    QGroupBox, QPushButton, QCheckBox, QTextEdit, QLabel,
-    QLineEdit, QMessageBox, QFrame, QStatusBar
+    QMainWindow, QWidget, QVBoxLayout, QStatusBar, QPushButton
 )
 
 from core.config_manager import get_postgres_config, save_postgres_config, RESOURCES_DIR
-from core.database_manager import DatabaseManager
 from core.logger import QtOutputLogger
 from ui.styles import (
     LIGHT_THEME, DARK_THEME,
     VERSION_WIDGET_STYLE_LIGHT, VERSION_WIDGET_STYLE_DARK,
-    CONSOLE_BUTTON_STYLE_LIGHT, CONSOLE_BUTTON_STYLE_DARK,
-    DISABLED_BUTTON_STYLE_LIGHT, DISABLED_BUTTON_STYLE_DARK
+    CONSOLE_BUTTON_STYLE_LIGHT, CONSOLE_BUTTON_STYLE_DARK
 )
-
-
-# Класс для безопасной передачи данных между потоками
-class WorkerSignals(QObject):
-    finished = pyqtSignal()
-    error = pyqtSignal(str)
-    log = pyqtSignal(str)
+from ui.widgets.connection_config_widget import ConnectionConfigWidget
+from ui.widgets.console_output_widget import ConsoleOutputWidget
+from ui.widgets.control_buttons_widget import ControlButtonsWidget
+from ui.widgets.database_selection_widget import DatabaseSelectionWidget
 
 
 class MainWindow(QMainWindow):
@@ -36,9 +27,6 @@ class MainWindow(QMainWindow):
 
         self.setWindowIcon(self.get_app_icon())
 
-        # Для отслеживания активных потоков
-        self.active_workers = []
-
         # Загрузка настроек темы
         self.settings = QSettings("PSQLMockCreator", "AppSettings")
         self.current_theme = self.settings.value("theme", "light", type=str)
@@ -46,11 +34,8 @@ class MainWindow(QMainWindow):
         self.setup_ui()
         self.setup_status_bar()
         self.load_saved_config()
-
-        self.logger = QtOutputLogger(self.console_output)  # Используем console_output, а не ui.textEdit_console
-        self.logger.start_logging()
-
-        self.setup_console_updater()
+        self.setup_logger()
+        self.connect_signals()
 
         # Применяем сохраненную тему
         self.apply_theme(self.current_theme)
@@ -69,7 +54,6 @@ class MainWindow(QMainWindow):
             except:
                 continue
 
-        # Возвращаем стандартную иконку Qt если ничего не найдено
         return QIcon.fromTheme("application-x-executable")
 
     def setup_ui(self):
@@ -82,246 +66,22 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
         main_layout = QVBoxLayout(central_widget)
 
-        # ===== 1. СЕКЦИЯ: Текстовые поля для конфига =====
-        config_group = QGroupBox("Настройки подключения к PostgreSQL")
-        config_layout = QGridLayout()
+        # 1. Виджет настроек подключения
+        self.connection_widget = ConnectionConfigWidget()
+        main_layout.addWidget(self.connection_widget)
 
-        # Создаем поля ввода
-        self.host_input = QLineEdit()
-        self.port_input = QLineEdit()
-        self.user_input = QLineEdit()
-        self.password_input = QLineEdit()
-        self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
+        # 2. Виджет выбора баз данных
+        self.db_selection_widget = DatabaseSelectionWidget()
+        main_layout.addWidget(self.db_selection_widget)
 
-        # Добавляем поля с подписями
-        config_layout.addWidget(QLabel("Хост:"), 0, 0)
-        config_layout.addWidget(self.host_input, 0, 1)
-        config_layout.addWidget(QLabel("Порт:"), 1, 0)
-        config_layout.addWidget(self.port_input, 1, 1)
-        config_layout.addWidget(QLabel("Пользователь:"), 2, 0)
-        config_layout.addWidget(self.user_input, 2, 1)
-        config_layout.addWidget(QLabel("Пароль:"), 3, 0)
-        config_layout.addWidget(self.password_input, 3, 1)
+        # 3. Виджет кнопок управления (ВСЯ логика потоков теперь здесь!)
+        self.control_buttons = ControlButtonsWidget(self)
+        self.control_buttons.set_current_theme(self.current_theme)
+        main_layout.addWidget(self.control_buttons)
 
-        config_group.setLayout(config_layout)
-        main_layout.addWidget(config_group)
-
-        # ===== 2. СЕКЦИЯ: Чекбоксы для выбора баз =====
-        db_group = QGroupBox("Выберите базы данных для создания")
-        db_layout = QGridLayout()
-
-        # Создаем чекбоксы для каждой БД
-        self.db_checkboxes = {}
-        databases = [
-            ("games_easy", "🎮 Простая база видеоигр (1 таблица)"),
-            ("school_world", "🏫 Школьная база данных (5 таблиц)"),
-            ("games_shop", "🛒 Магазин видеоигр (4 таблицы)"),
-            ("air_travel", "✈️ Авиакомпании и перелеты (5 таблиц)")
-        ]
-
-        for i, (db_id, db_label) in enumerate(databases):
-            checkbox = QCheckBox(db_label)
-            checkbox.setChecked(True)
-            self.db_checkboxes[db_id] = checkbox
-            db_layout.addWidget(checkbox, i // 2, i % 2)
-
-        db_group.setLayout(db_layout)
-        main_layout.addWidget(db_group)
-
-        # ===== 3. СЕКЦИЯ: Кнопки управления =====
-        button_frame = QFrame()
-        button_layout = QHBoxLayout(button_frame)
-        button_layout.setContentsMargins(0, 10, 0, 10)
-
-        # Создаем контейнер для центрирования кнопок
-        button_container = QWidget()
-        button_container_layout = QHBoxLayout(button_container)
-        button_container_layout.setSpacing(15)
-        button_container_layout.setContentsMargins(0, 0, 0, 0)
-
-        # Кнопка "Создать базы данных"
-        self.create_btn = QPushButton("🗄️ Создать базы данных")
-        self.create_btn.clicked.connect(self.create_databases)
-        self.create_btn.setObjectName("createButton")
-        self.create_btn.setMinimumWidth(150)
-
-        # Кнопка "Очистить базы данных"
-        self.clean_btn = QPushButton("🧹 Очистить базы данных")
-        self.clean_btn.clicked.connect(self.clean_databases)
-        self.clean_btn.setObjectName("cleanButton")
-        self.clean_btn.setMinimumWidth(150)
-
-        # Кнопка "Сохранить конфиг"
-        self.save_btn = QPushButton("💾 Сохранить настройки")
-        self.save_btn.clicked.connect(self.save_current_config)
-        self.save_btn.setObjectName("saveButton")
-        self.save_btn.setMinimumWidth(150)
-
-        # Добавляем кнопки в контейнер
-        button_container_layout.addWidget(self.create_btn)
-        button_container_layout.addWidget(self.clean_btn)
-        button_container_layout.addWidget(self.save_btn)
-
-        # Центрируем контейнер с кнопками
-        button_layout.addStretch()
-        button_layout.addWidget(button_container)
-        button_layout.addStretch()
-
-        main_layout.addWidget(button_frame)
-
-        # ===== 4. СЕКЦИЯ: Окно консоли =====
-        console_group = QGroupBox("Консоль вывода")
-        console_layout = QVBoxLayout()
-
-        self.console_output = QTextEdit()
-        self.console_output.setReadOnly(True)
-        self.console_output.setFont(QFont("Courier New", 10))
-
-        # Кнопка очистки консоли
-        self.clear_btn = QPushButton("Очистить консоль")
-        self.clear_btn.clicked.connect(self.clear_console)
-
-        console_layout.addWidget(self.clear_btn)
-        console_layout.addWidget(self.console_output)
-        console_group.setLayout(console_layout)
-
-        main_layout.addWidget(console_group, 1)
-
-    def create_databases(self):
-        """Обработчик кнопки 'Создать базы данных'."""
-        selected = self.get_selected_databases()
-        if not selected:
-            QMessageBox.warning(self, "Внимание", "Выберите хотя бы одну базу данных!")
-            return
-
-        config = self.get_current_config()
-        self.run_database_operation("create", selected, config)
-
-    def clean_databases(self):
-        """Обработчик кнопки 'Очистить базы данных'."""
-        selected = self.get_selected_databases()
-        if not selected:
-            QMessageBox.warning(self, "Внимание", "Выберите хотя бы одну базу данных!")
-            return
-
-        reply = QMessageBox.question(
-            self, 'Подтверждение',
-            f'Вы уверены, что хотите очистить {len(selected)} баз данных?\nЭто действие удалит все данные.',
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-        )
-
-        if reply == QMessageBox.StandardButton.Yes:
-            config = self.get_current_config()
-            self.run_database_operation("clean", selected, config)
-
-    def run_database_operation(self, operation, databases, config):
-        """Запускает операцию с БД в отдельном потоке."""
-        self.set_buttons_enabled(False)
-        self.logger.start_logging()
-
-        # Создаем объект сигналов для этого потока
-        worker_signals = WorkerSignals()
-        worker_signals.finished.connect(lambda: self.on_worker_finished(worker_signals))
-        worker_signals.error.connect(self.on_worker_error)
-        worker_signals.log.connect(self.on_worker_log)
-
-        def worker():
-            try:
-                db_manager = DatabaseManager(config)
-                if operation == "create":
-                    db_manager.create_databases(databases)
-                else:
-                    db_manager.clean_databases(databases)
-                worker_signals.finished.emit()
-            except Exception as e:
-                error_msg = f"[ERROR] Ошибка: {e}\n{traceback.format_exc()}"
-                worker_signals.error.emit(error_msg)
-
-        thread = threading.Thread(target=worker, daemon=True)
-        self.active_workers.append((thread, worker_signals))
-
-        thread.start()
-
-        op_name = "создание" if operation == "create" else "очистка"
-        self.log_to_console(f"\n{'=' * 60}\n")
-        self.log_to_console(f"Запуск {op_name} баз данных: {', '.join(databases)}\n")
-        self.log_to_console(f"{'=' * 60}\n\n")
-        self.statusBar().showMessage(f"Выполняется {op_name}...")
-
-    @pyqtSlot()
-    def on_worker_finished(self, worker_signals):
-        """Слот для завершения работы потока."""
-        # Удаляем завершенный поток из списка активных
-        for i, (thread, signals) in enumerate(self.active_workers):
-            if signals == worker_signals:
-                self.active_workers.pop(i)
-                break
-
-        self.logger.stop_logging()
-        self.set_buttons_enabled(True)
-        self.statusBar().showMessage("Операция завершена", 3000)
-
-    @pyqtSlot(str)
-    def on_worker_error(self, error_msg):
-        """Слот для обработки ошибок из потока."""
-        print(error_msg)  # Вывод в системную консоль
-        self.log_to_console(error_msg)  # Вывод в UI консоль
-
-    @pyqtSlot(str)
-    def on_worker_log(self, log_msg):
-        """Слот для получения логов из потока."""
-        self.log_to_console(log_msg)
-
-    def setup_console_updater(self):
-        """Настраивает таймер для обновления консоли."""
-        self.console_timer = QTimer()
-        self.console_timer.timeout.connect(self.update_console_display)
-        self.console_timer.start(100)
-
-    def update_console_display(self):
-        """Берет накопленные логи из OutputLogger и выводит в QTextEdit."""
-        if hasattr(self, 'logger'):
-            logs = self.logger.get_logs()
-            if logs:
-                self.console_output.moveCursor(QTextCursor.MoveOperation.End)
-                self.console_output.insertPlainText(logs)
-                self.console_output.ensureCursorVisible()
-
-    def log_to_console(self, message):
-        """Прямой вывод сообщения в консоль (для UI событий)."""
-        self.console_output.moveCursor(QTextCursor.MoveOperation.End)
-        self.console_output.insertPlainText(message)
-        self.console_output.ensureCursorVisible()
-
-    def closeEvent(self, event):
-        """Обработчик закрытия окна - ВАЖНО для предотвращения падений!"""
-        print("Начало корректного закрытия приложения...")
-
-        # 1. Останавливаем все таймеры
-        if hasattr(self, 'console_timer'):
-            self.console_timer.stop()
-
-        if hasattr(self, 'status_timer'):
-            self.status_timer.stop()
-
-        # 2. Ожидаем завершения всех рабочих потоков
-        print(f"Ожидание завершения {len(self.active_workers)} активных потоков...")
-        for thread, _ in self.active_workers:
-            if thread.is_alive():
-                thread.join(timeout=2.0)  # Ждем до 2 секунд
-
-        # 3. Останавливаем логгирование
-        if hasattr(self, 'logger'):
-            self.logger.stop_logging()
-
-        # 4. Сохраняем настройки
-        self.settings.setValue("theme", self.current_theme)
-
-        # 5. Вызываем явный flush для stdout
-        sys.stdout.flush()
-
-        print("Приложение корректно завершено.")
-        super().closeEvent(event)
+        # 4. Виджет консоли
+        self.console_widget = ConsoleOutputWidget()
+        main_layout.addWidget(self.console_widget, 1)
 
     def setup_status_bar(self):
         """Настройка статус бара с отображением версии и кнопкой темы"""
@@ -332,16 +92,12 @@ class MainWindow(QMainWindow):
         status_bar.showMessage("Готово")
 
         # Кнопка переключения темы
-        self.theme_btn = QPushButton()
-        self.theme_btn.setObjectName("themeButton")
-        self.theme_btn.setFixedSize(30, 22)
-        self.theme_btn.clicked.connect(self.toggle_theme)
-        self.theme_btn.setToolTip("Переключить тему")
+        self.theme_btn = self.create_theme_button()
 
         # Версия приложения
         version_widget = self.create_version_widget()
 
-        # Добавляем элементы в статус бар (справа налево)
+        # Добавляем элементы в статус бар
         status_bar.addPermanentWidget(self.theme_btn)
         status_bar.addPermanentWidget(version_widget)
 
@@ -350,6 +106,19 @@ class MainWindow(QMainWindow):
         self.status_timer.timeout.connect(self.update_status_message)
         self.status_timer.start(5000)
 
+    def create_theme_button(self):
+        """Создает кнопку переключения темы."""
+        theme_btn = QPushButton()
+        theme_btn.setObjectName("themeButton")
+        theme_btn.setFixedSize(30, 22)
+        theme_btn.clicked.connect(self.toggle_theme)
+        theme_btn.setToolTip("Переключить тему")
+
+        # Устанавливаем начальную иконку
+        theme_btn.setText("🌙" if self.current_theme == "light" else "🌞")
+
+        return theme_btn
+
     def create_version_widget(self):
         """Создает виджет с информацией о версии"""
         try:
@@ -357,6 +126,8 @@ class MainWindow(QMainWindow):
             version_str = get_version_string()
         except ImportError:
             version_str = "v1.0.0"
+
+        from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel
 
         # Создаем контейнер для версии
         version_container = QWidget()
@@ -387,69 +158,78 @@ class MainWindow(QMainWindow):
 
         return version_container
 
+    def setup_logger(self):
+        """Настраивает логгер и связывает его с виджетом кнопок."""
+        # Передаем QTextEdit из виджета консоли в логгер
+        self.logger = QtOutputLogger(self.console_widget.get_text_widget())
+        self.logger.start_logging()
+
+        # Передаем логгер в виджет кнопок
+        self.control_buttons.set_logger(self.logger)
+        self.control_buttons.set_console_output(self.console_widget.get_text_widget())
+
+        # Настраиваем таймер для обновления консоли
+        self.console_timer = QTimer()
+        self.console_timer.timeout.connect(self.update_console_display)
+        self.console_timer.start(100)
+
+    def connect_signals(self):
+        """Подключает сигналы между компонентами."""
+        # Кнопка очистки консоли
+        self.console_widget.clear_btn.clicked.connect(self.console_widget.clear)
+
+        # Сигналы от виджета кнопок
+        self.control_buttons.operation_started.connect(
+            lambda msg: self.statusBar().showMessage(msg)
+        )
+        self.control_buttons.operation_finished.connect(
+            lambda msg: self.statusBar().showMessage(msg, 3000)
+        )
+        self.control_buttons.config_saved.connect(
+            lambda: self.statusBar().showMessage("Настройки сохранены", 3000)
+        )
+        self.control_buttons.console_log.connect(
+            self.console_widget.log_message
+        )
+
+    def update_console_display(self):
+        """Обновляет отображение консоли."""
+        if hasattr(self, 'logger'):
+            logs = self.logger.get_logs()
+            if logs:
+                self.console_widget.log_message(logs)
+
     def apply_theme(self, theme_name):
         """Применяет выбранную тему."""
         self.current_theme = theme_name
-
-        # Сохраняем выбор темы
         self.settings.setValue("theme", theme_name)
 
         if theme_name == "dark":
-            # Применяем темную тему
             self.setStyleSheet(DARK_THEME)
-            self.theme_btn.setText("🌞")  # Солнце для переключения на светлую
-            self.clear_btn.setStyleSheet(CONSOLE_BUTTON_STYLE_DARK)
+            self.theme_btn.setText("🌞")
+            self.console_widget.set_clear_button_style(CONSOLE_BUTTON_STYLE_DARK)
 
             # Обновляем стиль виджета версии
             version_widget = self.statusBar().findChild(QWidget)
             if version_widget:
                 version_widget.setStyleSheet(VERSION_WIDGET_STYLE_DARK)
 
-            # Обновляем стили отключенных кнопок
-            self.update_disabled_buttons_style(DISABLED_BUTTON_STYLE_DARK)
-
         else:
-            # Применяем светлую тему
             self.setStyleSheet(LIGHT_THEME)
-            self.theme_btn.setText("🌙")  # Луна для переключения на темную
-            self.clear_btn.setStyleSheet(CONSOLE_BUTTON_STYLE_LIGHT)
+            self.theme_btn.setText("🌙")
+            self.console_widget.set_clear_button_style(CONSOLE_BUTTON_STYLE_LIGHT)
 
             # Обновляем стиль виджета версии
             version_widget = self.statusBar().findChild(QWidget)
             if version_widget:
                 version_widget.setStyleSheet(VERSION_WIDGET_STYLE_LIGHT)
 
-            # Обновляем стили отключенных кнопок
-            self.update_disabled_buttons_style(DISABLED_BUTTON_STYLE_LIGHT)
+        # Обновляем тему в виджете кнопок
+        self.control_buttons.set_current_theme(theme_name)
 
         # Логируем смену темы
-        self.log_to_console(f"[THEME] Применена {theme_name} тема\n")
-
-        # Обновляем статус бар
+        self.console_widget.log_message(f"[THEME] Применена {theme_name} тема\n")
         self.statusBar().showMessage(f"Тема: {theme_name}", 2000)
-
-    def update_disabled_buttons_style(self, style):
-        """Обновляет стили для отключенных кнопок."""
-        # Сохраняем текущее состояние кнопок
-        create_enabled = self.create_btn.isEnabled()
-        clean_enabled = self.clean_btn.isEnabled()
-        save_enabled = self.save_btn.isEnabled()
-
-        # Временно отключаем, чтобы применить стиль
-        if not create_enabled:
-            self.create_btn.setStyleSheet(style)
-        else:
-            self.create_btn.setStyleSheet("")
-
-        if not clean_enabled:
-            self.clean_btn.setStyleSheet(style)
-        else:
-            self.clean_btn.setStyleSheet("")
-
-        if not save_enabled:
-            self.save_btn.setStyleSheet(style)
-        else:
-            self.save_btn.setStyleSheet("")
 
     def toggle_theme(self):
         """Переключает тему между светлой и темной."""
@@ -457,7 +237,7 @@ class MainWindow(QMainWindow):
         self.apply_theme(new_theme)
 
     def update_status_message(self):
-        """Обновляет сообщение в статус баре"""
+        """Обновляет сообщение в статус баре."""
         messages = [
             "Готов к работе",
             "Ожидание действий пользователя",
@@ -480,7 +260,7 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(messages[next_idx], 3000)
 
     def get_app_version(self):
-        """Возвращает версию приложения"""
+        """Возвращает версию приложения."""
         try:
             from version import get_version_string
             return get_version_string()
@@ -490,53 +270,45 @@ class MainWindow(QMainWindow):
     def load_saved_config(self):
         """Загружает сохраненный конфиг в поля ввода."""
         config = get_postgres_config()
-        self.host_input.setText(config.get('host', 'localhost'))
-        self.port_input.setText(str(config.get('port', 5432)))
-        self.user_input.setText(config.get('user', 'postgres'))
-        self.password_input.setText(config.get('password', ''))
+        self.connection_widget.load_config(config)
 
     def get_current_config(self):
         """Возвращает текущие настройки из полей ввода как словарь."""
-        return {
-            'host': self.host_input.text().strip(),
-            'port': int(self.port_input.text()) if self.port_input.text().isdigit() else 5432,
-            'user': self.user_input.text().strip(),
-            'password': self.password_input.text()
-        }
+        return self.connection_widget.get_config()
 
     def get_selected_databases(self):
         """Возвращает список ID выбранных баз данных."""
-        return [db_id for db_id, checkbox in self.db_checkboxes.items() if checkbox.isChecked()]
+        return self.db_selection_widget.get_selected_databases()
 
     def save_current_config(self):
         """Сохраняет текущие настройки в файл."""
         config = self.get_current_config()
         save_postgres_config(config)
-        self.log_to_console("[INFO] Настройки сохранены в config/postgres.json\n")
-        self.statusBar().showMessage("Настройки сохранены", 3000)
+        self.console_widget.log_message("[INFO] Настройки сохранены в config/postgres.json\n")
 
-    def set_buttons_enabled(self, enabled):
-        """Блокирует или разблокирует кнопки управления."""
-        self.create_btn.setEnabled(enabled)
-        self.clean_btn.setEnabled(enabled)
-        self.save_btn.setEnabled(enabled)
+    def closeEvent(self, event):
+        """Обработчик закрытия окна."""
+        print("Начало корректного закрытия приложения...")
 
-        # Применяем/снимаем стиль для отключенных кнопок
-        if not enabled:
-            if self.current_theme == "dark":
-                style = DISABLED_BUTTON_STYLE_DARK
-            else:
-                style = DISABLED_BUTTON_STYLE_LIGHT
+        # 1. Останавливаем все таймеры
+        if hasattr(self, 'console_timer'):
+            self.console_timer.stop()
+        if hasattr(self, 'status_timer'):
+            self.status_timer.stop()
 
-            self.create_btn.setStyleSheet(style)
-            self.clean_btn.setStyleSheet(style)
-            self.save_btn.setStyleSheet(style)
-        else:
-            self.create_btn.setStyleSheet("")
-            self.clean_btn.setStyleSheet("")
-            self.save_btn.setStyleSheet("")
+        # 2. Очищаем ресурсы виджета кнопок (ждем завершения потоков)
+        if hasattr(self, 'control_buttons'):
+            self.control_buttons.cleanup()
 
-    def clear_console(self):
-        """Очищает окно консоли."""
-        self.console_output.clear()
-        self.log_to_console(f"[{datetime.now().strftime('%H:%M:%S')}] Консоль очищена\n")
+        # 3. Останавливаем логгирование
+        if hasattr(self, 'logger'):
+            self.logger.stop_logging()
+
+        # 4. Сохраняем настройки
+        self.settings.setValue("theme", self.current_theme)
+
+        # 5. Вызываем явный flush для stdout
+        sys.stdout.flush()
+
+        print("Приложение корректно завершено.")
+        super().closeEvent(event)

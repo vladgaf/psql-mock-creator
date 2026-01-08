@@ -1,20 +1,20 @@
 [
-    {
-        "first_name": "Алексей",
-        "last_name": "Иванов",
-        "birth_date": "2012-03-15",
-        "class_id": 1
-    },
-    {
-        "first_name": "Мария",
-        "last_name": "Петрова",
-        "birth_date": "2012-07-22",
-        "class_id": 1
-    },
-    {
-        "first_name": "Дмитрий",
-        "last_name": "Сидоров",
-        "birth_date": "2011-11-08",
-        "class_id": 2
-    }
+  {
+    "first_name": "Алексей",
+    "last_name": "Иванов",
+    "birth_date": "2012-03-15",
+    "class_id": 1
+  },
+  {
+    "first_name": "Мария",
+    "last_name": "Петрова",
+    "birth_date": "2012-07-22",
+    "class_id": 1
+  },
+  {
+    "first_name": "Дмитрий",
+    "last_name": "Сидоров",
+    "birth_date": "2011-11-08",
+    "class_id": 2
+  }
 ]
