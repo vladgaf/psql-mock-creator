@@ -274,7 +274,7 @@ class DatabaseManager:
         print(f"📂 Загрузка данных из: {db_config['mock_data_folder']}")
 
         # Определяем порядок загрузки
-        loading_order = self._get_loading_order(db_config['db_name'])
+        loading_order = self._get_loading_order(models_module.get_models())
         print(f"🔀 Порядок загрузки: {', '.join(loading_order)}")
 
         # Создаем mapping имен файлов к классам моделей
@@ -289,15 +289,33 @@ class DatabaseManager:
             self._load_table_safely(mock_data_path, table_name, model_mapping, models_module, database)
 
     @staticmethod
-    def _get_loading_order(db_name):
-        """Определяет порядок загрузки данных"""
-        loading_orders = {
-            'school_world': ['teachers', 'classes', 'students', 'subjects', 'grades'],
-            'games_easy': ['games', 'reviews'],
-            'games_shop': ['games', 'customers', 'orders', 'order_items'],
-            'air_travel': ['airlines', 'airports', 'aircrafts', 'flights', 'passengers']
-        }
-        return loading_orders.get(db_name, [])
+    def _get_loading_order(models):
+        """Топологическая сортировка по ForeignKey зависимостям"""
+        from peewee import ForeignKeyField
+
+        model_set = set(models)  # только наши модели
+        deps = {m: set() for m in models}
+
+        for model in models:
+            for field in model._meta.fields.values():
+                if isinstance(field, ForeignKeyField):
+                    rel = field.rel_model
+                    if rel in model_set:  # игнорируем внешние модели
+                        deps[model].add(rel)
+
+        ordered, visited = [], set()
+
+        def visit(m):
+            if m not in visited:
+                visited.add(m)
+                for dep in deps.get(m, []):
+                    visit(dep)
+                ordered.append(m)
+
+        for m in models:
+            visit(m)
+
+        return [m._meta.table_name for m in ordered]
 
     def _load_table_safely(self, mock_data_path, table_name, model_mapping, models_module, database):
         """Безопасно загружает данные для одной таблицы"""

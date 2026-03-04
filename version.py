@@ -2,8 +2,8 @@
 Версия приложения PSQL Mock Creator
 """
 
-__version__ = "1.0.2"
-__version_info__ = (1, 0, 2)
+__version__ = "1.0.4"
+__version_info__ = (1, 0, 4)
 __build_date__ = "2026-03-04"
 __license__ = "MIT"
 
