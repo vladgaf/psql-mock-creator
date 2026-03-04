@@ -24,8 +24,18 @@ class Game(BaseModel):
         table_name = 'games'
 
 
+class Review(BaseModel):
+    game = ForeignKeyField(Game, column_name='game_id')
+    author = CharField(max_length=100)
+    rating = FloatField(default=1.0)
+    text = CharField(max_length=256)
+
+    class Meta:
+        table_name = 'reviews'
+
+
 # Список всех моделей для этой БД
-MODELS = [Game]
+MODELS = [Game, Review]
 
 
 def get_models():

@@ -1,0 +1,14 @@
+[
+  {
+    "game_id": 1,
+    "author": "Jack",
+    "rating": 5,
+    "text": "Love it!"
+  },
+  {
+    "game_id": 2,
+    "author": "Bob",
+    "rating": 3,
+    "text": "Average game..."
+  }
+]

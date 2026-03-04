@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QGroupBox, QGridLayout, QCheckBox
 
 class DatabaseSelectionWidget(QGroupBox):
     DATABASES = [
-        ("games_easy", "🎮 Простая база видеоигр (1 таблица)"),
+        ("games_easy", "🎮 Простая база видеоигр (2 таблицы)"),
         ("school_world", "🏫 Школьная база данных (5 таблиц)"),
         ("games_shop", "🛒 Магазин видеоигр (4 таблицы)"),
         ("air_travel", "✈️ Авиакомпании и перелеты (5 таблиц)")

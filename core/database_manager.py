@@ -293,7 +293,7 @@ class DatabaseManager:
         """Определяет порядок загрузки данных"""
         loading_orders = {
             'school_world': ['teachers', 'classes', 'students', 'subjects', 'grades'],
-            'games_easy': ['games'],
+            'games_easy': ['games', 'reviews'],
             'games_shop': ['games', 'customers', 'orders', 'order_items'],
             'air_travel': ['airlines', 'airports', 'aircrafts', 'flights', 'passengers']
         }
